@@ -1,21 +1,21 @@
 {
   "current": {
-    "observed_at": "2026-10-22T21:37:14+00:00",
-    "calculated_at": "2026-10-22T21:41:43.428387+00:00",
-    "utci_c": 8.3,
+    "observed_at": "2026-10-22T22:00:11+00:00",
+    "calculated_at": "2026-10-22T22:05:16.891297+00:00",
+    "utci_c": 7.7,
     "inputs": {
-      "air_temperature_c": 9.3,
-      "mean_radiant_temperature_c": 9.3,
-      "wind_speed_m_s": 1.6,
-      "relative_humidity_percent": 85.2
+      "air_temperature_c": 9.2,
+      "mean_radiant_temperature_c": 9.2,
+      "wind_speed_m_s": 1.8,
+      "relative_humidity_percent": 90.0
     },
     "model_inputs": {
-      "air_temperature_c": 9.3,
-      "mean_radiant_temperature_c": 9.3,
-      "wind_speed_m_s": 1.6,
-      "relative_humidity_percent": 85.2
+      "air_temperature_c": 9.2,
+      "mean_radiant_temperature_c": 9.2,
+      "wind_speed_m_s": 1.8,
+      "relative_humidity_percent": 90.0
     }
   },
   "history": [],
-  "updated_at": "2026-10-22T21:41:43.428387+00:00"
+  "updated_at": "2026-10-22T22:05:16.891297+00:00"
 }
