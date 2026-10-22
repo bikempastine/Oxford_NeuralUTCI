@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Oxford UTCI calculated from the Physics roof weather station using Neural-UTCI.">
+    <title>Oxford Neural-UTCI</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <main>
+      <header>
+        <p class="eyebrow">Oxford Physics Roof Station</p>
+        <h1>Oxford UTCI</h1>
+        <p class="intro">
+          A daily Universal Thermal Climate Index calculation using the station's
+          latest weather observations and the Neural-UTCI model.
+        </p>
+      </header>
+
+      <section aria-labelledby="latest-heading">
+        <h2 id="latest-heading">Latest calculation</h2>
+        <p id="load-status" role="status">Loading the latest calculation…</p>
+        <div id="current-calculation" hidden>
+          <p class="utci-value"><span id="utci-value"></span><span> °C UTCI</span></p>
+          <p id="observation-time" class="muted"></p>
+          <p id="calculation-time" class="muted"></p>
+          <h3>Weather inputs for this calculation</h3>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th scope="col">Input</th><th scope="col">Station reading</th><th scope="col">Value used by model</th></tr>
+              </thead>
+              <tbody id="current-inputs"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="history-heading">
+        <h2 id="history-heading">Daily midday history</h2>
+        <p>
+          Up to the most recent seven Oxford-local-noon calculations are kept.
+          Each row includes the weather inputs recorded for that calculation.
+        </p>
+        <p id="history-empty" class="muted">No midday history has been recorded yet.</p>
+        <div class="table-wrap">
+          <table id="history-table" hidden>
+            <thead>
+              <tr>
+                <th scope="col">Oxford date</th>
+                <th scope="col">Calculated at</th>
+                <th scope="col">Station observation time</th>
+                <th scope="col">UTCI</th>
+                <th scope="col">Air temp. (station → model, °C)</th>
+                <th scope="col">MRT (station → model, °C)</th>
+                <th scope="col">Humidity (station → model, %)</th>
+                <th scope="col">Wind (station → model, m/s)</th>
+              </tr>
+            </thead>
+            <tbody id="history-rows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section aria-labelledby="method-heading">
+        <h2 id="method-heading">How this page works</h2>
+        <ol>
+          <li>The updater reads air temperature, relative humidity, wind speed, and the observation time from the Oxford Physics roof station's current-weather page.</li>
+          <li>It passes those measurements to <a href="https://github.com/bikempastine/NeuralUTCI">Neural-UTCI</a> to calculate UTCI.</li>
+          <li>Mean radiant temperature (MRT) is assumed to equal air temperature. It is an assumption, not a separate station measurement.</li>
+          <li>Wind speed is passed through as the station reports it; no adjustment to the model's documented 10 m wind reference is applied.</li>
+          <li>The latest calculation and its inputs are refreshed daily around midday Oxford time. One snapshot is added to the history each day; older snapshots beyond seven days are removed.</li>
+        </ol>
+        <h3>Model input limits</h3>
+        <p>
+          Neural-UTCI accepts air temperature from −50 to 50 °C, MRT from −80
+          to 120 °C, wind speed from 0.5 to 30.3 m/s, and relative humidity
+          from 5 to 100%. The model is called with its documented
+          <code>oob="clamp"</code> option: values outside those ranges are
+          limited to the nearest accepted value for the calculation. The tables
+          show both the original station reading and the value used by the model,
+          so any adjustment is visible.
+        </p>
+        <p class="muted">
+          The station notes that its humidity sensor can briefly report 0% in
+          saturated conditions; those readings are shown as reported and
+          clamped to the model's 5% minimum when calculating UTCI.
+        </p>
+      </section>
+
+      <footer>
+        <p>
+          Source: <a href="https://eodg.atm.ox.ac.uk/eodg/weather/weather.html">Oxford Physics roof weather station</a>.
+          UTCI is an estimate based on the stated inputs and MRT assumption.
+        </p>
+      </footer>
+    </main>
+  </body>
+</html>

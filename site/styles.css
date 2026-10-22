@@ -1,0 +1,131 @@
+:root {
+  color-scheme: light;
+  font-family: "Segoe UI", Arial, sans-serif;
+  color: #202a34;
+  background: #f4f6f8;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  line-height: 1.6;
+}
+
+main {
+  width: min(100% - 2rem, 960px);
+  margin: 2rem auto;
+}
+
+header,
+section,
+footer {
+  margin-bottom: 1.25rem;
+  padding: 1.5rem;
+  border: 1px solid #d8dee5;
+  border-radius: 8px;
+  background: #fff;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  margin-bottom: 0.4rem;
+  font-size: clamp(2rem, 5vw, 3rem);
+}
+
+h2 {
+  font-size: 1.4rem;
+}
+
+h3 {
+  margin-top: 1.5rem;
+  font-size: 1.1rem;
+}
+
+.eyebrow {
+  margin-bottom: 0.25rem;
+  color: #536477;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.intro {
+  max-width: 65ch;
+  margin-bottom: 0;
+}
+
+.utci-value {
+  margin: 0.5rem 0;
+  font-size: clamp(2.5rem, 8vw, 4rem);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.utci-value span + span {
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.muted {
+  color: #536477;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+th,
+td {
+  padding: 0.65rem 0.75rem;
+  border-bottom: 1px solid #d8dee5;
+  white-space: nowrap;
+}
+
+th {
+  background: #f4f6f8;
+}
+
+footer {
+  font-size: 0.95rem;
+}
+
+footer p {
+  margin-bottom: 0;
+}
+
+a {
+  color: #075e9e;
+}
+
+a:focus-visible {
+  outline: 3px solid #075e9e;
+  outline-offset: 2px;
+}
+
+@media (max-width: 600px) {
+  main {
+    width: min(100% - 1rem, 960px);
+    margin: 0.5rem auto;
+  }
+
+  header,
+  section,
+  footer {
+    padding: 1rem;
+  }
+}

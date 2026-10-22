@@ -1,0 +1,21 @@
+{
+  "current": {
+    "observed_at": "2026-10-22T21:37:14+00:00",
+    "calculated_at": "2026-10-22T21:41:43.428387+00:00",
+    "utci_c": 8.3,
+    "inputs": {
+      "air_temperature_c": 9.3,
+      "mean_radiant_temperature_c": 9.3,
+      "wind_speed_m_s": 1.6,
+      "relative_humidity_percent": 85.2
+    },
+    "model_inputs": {
+      "air_temperature_c": 9.3,
+      "mean_radiant_temperature_c": 9.3,
+      "wind_speed_m_s": 1.6,
+      "relative_humidity_percent": 85.2
+    }
+  },
+  "history": [],
+  "updated_at": "2026-10-22T21:41:43.428387+00:00"
+}

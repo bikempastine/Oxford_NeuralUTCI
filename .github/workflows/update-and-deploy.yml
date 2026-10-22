@@ -1,0 +1,87 @@
+name: Update and deploy Oxford UTCI
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    # Check both UTC hours to keep the run near midday through British Summer Time.
+    - cron: "15 11,12 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: oxford-utci-pages
+  cancel-in-progress: false
+
+jobs:
+  update-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Check whether this is the Oxford midday run
+        id: schedule
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" != "schedule" ]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          elif [ "$(python -c 'from datetime import datetime; from zoneinfo import ZoneInfo; print(datetime.now(ZoneInfo("Europe/London")).hour)')" = "12" ]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo "This scheduled check is outside the Oxford noon hour; skipping."
+          fi
+
+      - name: Install Neural-UTCI
+        if: steps.schedule.outputs.run == 'true'
+        run: python -m pip install -r requirements.txt
+
+      - name: Fetch weather and calculate UTCI
+        if: steps.schedule.outputs.run == 'true'
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            python scripts/update_utci.py
+          else
+            python scripts/update_utci.py --force
+          fi
+
+      - name: Save current reading and history
+        if: steps.schedule.outputs.run == 'true'
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add site/data/latest.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Update Oxford UTCI reading"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
+
+      - name: Configure GitHub Pages
+        if: steps.schedule.outputs.run == 'true'
+        uses: actions/configure-pages@v5
+
+      - name: Upload website
+        if: steps.schedule.outputs.run == 'true'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: Deploy website
+        if: steps.schedule.outputs.run == 'true'
+        id: deployment
+        uses: actions/deploy-pages@v4
