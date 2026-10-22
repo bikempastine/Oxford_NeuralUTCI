@@ -6,7 +6,7 @@ weather observations at the Oxford Physics roof station.
 ## What the site displays
 
 - The latest station observation time, UTCI result, and every input used for
-  that calculation.
+  both the Neural-UTCI and polynomial calculations.
 - Up to seven daily midday snapshots. Each history row keeps the original
   observation time and its air temperature, assumed mean radiant temperature,
   relative humidity, wind speed, and calculation time.
@@ -21,7 +21,16 @@ measured separately by this site.
 The updater reads the latest values and timestamp from the
 [Oxford Physics roof station's current-weather page](https://eodg.atm.ox.ac.uk/eodg/weather/weather.html).
 It calls `NeuralUTCI.utci` with air temperature, MRT equal to air temperature,
-wind speed, relative humidity, and `oob="clamp"`.
+wind speed, relative humidity, and `oob="clamp"`. It also calls
+`pythermalcomfort.models.utci` with the same original station inputs, SI units,
+and the library's default valid-range checking. Both outputs are shown rounded
+to one decimal place. If an input is outside the polynomial model's valid
+range, the polynomial value is recorded as unavailable rather than being
+clamped; the Neural-UTCI result remains available using its own clamping rule.
+The polynomial implementation's validity limits include −50 to 50 °C air
+temperature, 0.5 to 17 m/s wind speed, and 0 to 100% relative humidity. Since
+MRT is assumed equal to air temperature here, the MRT-to-air-temperature
+difference is zero.
 
 Neural-UTCI's documented input ranges are air temperature −50 to 50 °C, MRT
 −80 to 120 °C, wind speed 0.5 to 30.3 m/s, and relative humidity 5 to 100%.

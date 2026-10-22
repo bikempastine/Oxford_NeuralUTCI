@@ -153,11 +153,16 @@ def calculate_record(
     observation: Observation,
     calculated_at: datetime | None = None,
     model_function: Callable[..., float] | None = None,
+    polynomial_function: Callable[..., object] | None = None,
 ) -> dict[str, object]:
     if model_function is None:
         from NeuralUTCI import utci
 
         model_function = utci
+    if polynomial_function is None:
+        from pythermalcomfort.models import utci
+
+        polynomial_function = utci
 
     raw_inputs = {
         "air_temperature_c": observation.air_temperature_c,
@@ -177,10 +182,30 @@ def calculate_record(
     if not math.isfinite(value):
         raise ValueError("Neural-UTCI returned a non-finite UTCI value.")
 
+    polynomial_value: float | None = None
+    if 0.0 <= observation.relative_humidity_percent <= 100.0:
+        polynomial_result = polynomial_function(
+            tdb=observation.air_temperature_c,
+            tr=observation.air_temperature_c,
+            v=observation.wind_speed_m_s,
+            rh=observation.relative_humidity_percent,
+            units="SI",
+            limit_inputs=True,
+            round_output=False,
+        )
+        result_value = float(polynomial_result.utci)
+        if math.isfinite(result_value):
+            polynomial_value = round(result_value, 1)
+
     return {
         "observed_at": observation.observed_at.isoformat(),
         "calculated_at": (calculated_at or datetime.now(timezone.utc)).isoformat(),
         "utci_c": round(value, 1),
+        "neural_utci_c": round(value, 1),
+        "polynomial_utci_c": polynomial_value,
+        "polynomial_status": (
+            "calculated" if polynomial_value is not None else "outside_model_range"
+        ),
         "inputs": raw_inputs,
         "model_inputs": model_inputs(observation),
     }
@@ -216,6 +241,7 @@ def update_data(
     now: datetime | None = None,
     observation: Observation | None = None,
     model_function: Callable[..., float] | None = None,
+    polynomial_function: Callable[..., object] | None = None,
 ) -> bool:
     run_at = now or datetime.now(timezone.utc)
     local_now = run_at.astimezone(LONDON)
@@ -224,7 +250,12 @@ def update_data(
         return False
 
     observation = observation or fetch_observation()
-    record = calculate_record(observation, run_at, model_function)
+    record = calculate_record(
+        observation,
+        run_at,
+        model_function,
+        polynomial_function,
+    )
     data = _read_data(path)
     data["current"] = record
     data["updated_at"] = run_at.isoformat()

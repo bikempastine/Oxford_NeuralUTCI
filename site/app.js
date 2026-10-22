@@ -9,6 +9,12 @@ function formatValue(value, unit) {
   return `${Number(value).toFixed(1)} ${unit}`;
 }
 
+function hasPolynomialValue(record) {
+  return record.polynomial_utci_c !== null &&
+    record.polynomial_utci_c !== undefined &&
+    Number.isFinite(Number(record.polynomial_utci_c));
+}
+
 function formatComparedValue(record, key, unit) {
   const observed = Number(record.inputs[key]);
   const used = Number(record.model_inputs[key]);
@@ -37,7 +43,15 @@ function addCell(row, value) {
 }
 
 function renderCurrent(record) {
-  document.getElementById("utci-value").textContent = Number(record.utci_c).toFixed(1);
+  const neuralValue = record.neural_utci_c ?? record.utci_c;
+  document.getElementById("neural-utci-value").textContent =
+    Number(neuralValue).toFixed(1);
+  document.getElementById("polynomial-utci-value").textContent =
+    hasPolynomialValue(record) ? Number(record.polynomial_utci_c).toFixed(1) : "N/A";
+  document.getElementById("polynomial-status").textContent =
+    record.polynomial_status === "outside_model_range"
+      ? "An input is outside the polynomial model's valid range."
+      : "";
   document.getElementById("observation-time").textContent =
     `Station observation: ${formatTimestamp(record.observed_at)} Oxford time`;
   document.getElementById("calculation-time").textContent =
@@ -67,7 +81,14 @@ function renderHistory(records) {
     addCell(row, record.date);
     addCell(row, formatTimestamp(record.calculated_at));
     addCell(row, formatTimestamp(record.observed_at));
-    addCell(row, `${Number(record.utci_c).toFixed(1)} °C`);
+    const neuralValue = record.neural_utci_c ?? record.utci_c;
+    addCell(row, `${Number(neuralValue).toFixed(1)} °C`);
+    addCell(
+      row,
+      hasPolynomialValue(record)
+        ? `${Number(record.polynomial_utci_c).toFixed(1)} °C`
+        : "N/A",
+    );
     addCell(row, formatComparedValue(record, "air_temperature_c", "°C"));
     addCell(row, formatComparedValue(record, "mean_radiant_temperature_c", "°C"));
     addCell(row, formatComparedValue(record, "relative_humidity_percent", "%"));

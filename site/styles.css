@@ -50,6 +50,22 @@ h3 {
   font-size: 1.1rem;
 }
 
+.results {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.result {
+  padding: 1rem;
+  border: 1px solid #d8dee5;
+  border-radius: 6px;
+}
+
+.result h3 {
+  margin-top: 0;
+}
+
 .eyebrow {
   margin-bottom: 0.25rem;
   color: #536477;

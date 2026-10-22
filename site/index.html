@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Oxford UTCI calculated from the Physics roof weather station using Neural-UTCI.">
+    <meta name="description" content="Oxford UTCI calculated with Neural-UTCI and pythermalcomfort using Physics roof station observations.">
     <title>Oxford Neural-UTCI</title>
     <link rel="stylesheet" href="styles.css">
     <script src="app.js" defer></script>
@@ -14,8 +14,8 @@
         <p class="eyebrow">Oxford Physics Roof Station</p>
         <h1>Oxford UTCI</h1>
         <p class="intro">
-          A daily Universal Thermal Climate Index calculation using the station's
-          latest weather observations and the Neural-UTCI model.
+          Daily Universal Thermal Climate Index calculations using the station's
+          latest weather observations and two UTCI models.
         </p>
       </header>
 
@@ -23,14 +23,24 @@
         <h2 id="latest-heading">Latest calculation</h2>
         <p id="load-status" role="status">Loading the latest calculation…</p>
         <div id="current-calculation" hidden>
-          <p class="utci-value"><span id="utci-value"></span><span> °C UTCI</span></p>
+          <div class="results">
+            <div class="result">
+              <h3>Neural-UTCI</h3>
+              <p class="utci-value"><span id="neural-utci-value"></span><span> °C</span></p>
+            </div>
+            <div class="result">
+              <h3>Polynomial UTCI</h3>
+              <p class="utci-value"><span id="polynomial-utci-value"></span><span> °C</span></p>
+              <p id="polynomial-status" class="muted"></p>
+            </div>
+          </div>
           <p id="observation-time" class="muted"></p>
           <p id="calculation-time" class="muted"></p>
           <h3>Weather inputs for this calculation</h3>
           <div class="table-wrap">
             <table>
               <thead>
-                <tr><th scope="col">Input</th><th scope="col">Station reading</th><th scope="col">Value used by model</th></tr>
+                <tr><th scope="col">Input</th><th scope="col">Station reading</th><th scope="col">Value used by Neural-UTCI</th></tr>
               </thead>
               <tbody id="current-inputs"></tbody>
             </table>
@@ -52,7 +62,8 @@
                 <th scope="col">Oxford date</th>
                 <th scope="col">Calculated at</th>
                 <th scope="col">Station observation time</th>
-                <th scope="col">UTCI</th>
+                <th scope="col">Neural-UTCI (°C)</th>
+                <th scope="col">Polynomial UTCI (°C)</th>
                 <th scope="col">Air temp. (station → model, °C)</th>
                 <th scope="col">MRT (station → model, °C)</th>
                 <th scope="col">Humidity (station → model, %)</th>
@@ -69,6 +80,7 @@
         <ol>
           <li>The updater reads air temperature, relative humidity, wind speed, and the observation time from the Oxford Physics roof station's current-weather page.</li>
           <li>It passes those measurements to <a href="https://github.com/bikempastine/NeuralUTCI">Neural-UTCI</a> to calculate UTCI.</li>
+          <li>It passes the same station measurements to <a href="https://pythermalcomfort.readthedocs.io/en/latest/documentation/models.html#utci">pythermalcomfort</a> to calculate the polynomial UTCI approximation.</li>
           <li>Mean radiant temperature (MRT) is assumed to equal air temperature. It is an assumption, not a separate station measurement.</li>
           <li>Wind speed is passed through as the station reports it; no adjustment to the model's documented 10 m wind reference is applied.</li>
           <li>The latest calculation and its inputs are refreshed daily around midday Oxford time. One snapshot is added to the history each day; older snapshots beyond seven days are removed.</li>
@@ -82,6 +94,15 @@
           limited to the nearest accepted value for the calculation. The tables
           show both the original station reading and the value used by the model,
           so any adjustment is visible.
+        </p>
+        <p>
+          The polynomial calculation uses the original station inputs without
+          clamping and pythermalcomfort's input limits. Its documented valid
+          ranges include air temperature from −50 to 50 °C, wind speed from
+          0.5 to 17 m/s, and relative humidity from 0 to 100%. If an input is
+          outside the polynomial model's valid range, the polynomial result is
+          shown as unavailable; the Neural-UTCI result is still shown using its
+          own documented clamping behavior.
         </p>
         <p class="muted">
           The station notes that its humidity sensor can briefly report 0% in

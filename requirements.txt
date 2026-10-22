@@ -1,2 +1,3 @@
 git+https://github.com/bikempastine/NeuralUTCI.git
+pythermalcomfort==4.6.2
 tzdata
