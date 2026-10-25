@@ -86,9 +86,112 @@ h3 {
   line-height: 1.2;
 }
 
-.utci-value span + span {
-  font-size: 1.2rem;
-  font-weight: 500;
+.stress-category {
+  display: inline-block;
+  margin: 0;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+.extreme-heat {
+  color: #fff;
+  background: #7f1d1d;
+}
+
+.very-strong-heat {
+  color: #fff;
+  background: #b91c1c;
+}
+
+.strong-heat {
+  color: #fff;
+  background: #dc2626;
+}
+
+.moderate-heat {
+  color: #7c2d12;
+  background: #fed7aa;
+}
+
+.no-stress {
+  color: #fff;
+  background: #166534;
+}
+
+.slight-cold {
+  color: #fff;
+  background: #0891b2;
+}
+
+.moderate-cold {
+  color: #fff;
+  background: #2563eb;
+}
+
+.strong-cold {
+  color: #fff;
+  background: #4f46e5;
+}
+
+.very-strong-cold {
+  color: #fff;
+  background: #6b21a8;
+}
+
+.extreme-cold {
+  color: #fff;
+  background: #312e81;
+}
+
+.utci-value.extreme-heat {
+  color: #7f1d1d;
+  background: transparent;
+}
+
+.utci-value.very-strong-heat {
+  color: #991b1b;
+  background: transparent;
+}
+
+.utci-value.strong-heat {
+  color: #b91c1c;
+  background: transparent;
+}
+
+.utci-value.moderate-heat {
+  color: #9a3412;
+  background: transparent;
+}
+
+.utci-value.no-stress {
+  color: #166534;
+  background: transparent;
+}
+
+.utci-value.slight-cold {
+  color: #0e7490;
+  background: transparent;
+}
+
+.utci-value.moderate-cold {
+  color: #1d4ed8;
+  background: transparent;
+}
+
+.utci-value.strong-cold {
+  color: #4338ca;
+  background: transparent;
+}
+
+.utci-value.very-strong-cold {
+  color: #6b21a8;
+  background: transparent;
+}
+
+.utci-value.extreme-cold {
+  color: #312e81;
+  background: transparent;
 }
 
 .muted {

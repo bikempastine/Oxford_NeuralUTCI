@@ -4,15 +4,11 @@
     "calculated_at": "2026-10-22T22:33:10.886261+00:00",
     "utci_c": 6.6,
     "neural_utci_c": 6.6,
+    "neural_stress_category": "Slight cold stress",
     "polynomial_utci_c": 7.1,
+    "polynomial_stress_category": "Slight cold stress",
     "polynomial_status": "calculated",
     "inputs": {
-      "air_temperature_c": 9.4,
-      "mean_radiant_temperature_c": 9.4,
-      "wind_speed_m_s": 2.2,
-      "relative_humidity_percent": 92.8
-    },
-    "model_inputs": {
       "air_temperature_c": 9.4,
       "mean_radiant_temperature_c": 9.4,
       "wind_speed_m_s": 2.2,

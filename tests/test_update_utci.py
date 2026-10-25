@@ -11,6 +11,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 from update_utci import (  # noqa: E402
     Observation,
     calculate_record,
+    classify_thermal_stress,
     parse_station_page,
     update_data,
 )
@@ -27,6 +28,25 @@ SAMPLE_PAGE = """
 
 
 class UpdateUTCITests(unittest.TestCase):
+    def test_thermal_stress_categories_at_thresholds(self) -> None:
+        cases = (
+            (46.1, "Extreme heat stress"),
+            (46.0, "Very strong heat stress"),
+            (38.0, "Very strong heat stress"),
+            (32.0, "Strong heat stress"),
+            (26.0, "Moderate heat stress"),
+            (9.0, "No thermal stress"),
+            (0.0, "Slight cold stress"),
+            (-13.0, "Moderate cold stress"),
+            (-27.0, "Strong cold stress"),
+            (-40.0, "Very strong cold stress"),
+            (-40.1, "Extreme cold stress"),
+            (None, None),
+        )
+        for value, expected in cases:
+            with self.subTest(value=value):
+                self.assertEqual(classify_thermal_stress(value), expected)
+
     def test_parse_station_page(self) -> None:
         observation = parse_station_page(SAMPLE_PAGE)
         self.assertEqual(
@@ -84,11 +104,11 @@ class UpdateUTCITests(unittest.TestCase):
         )
         self.assertEqual(record["utci_c"], 4.3)
         self.assertEqual(record["neural_utci_c"], 4.3)
+        self.assertEqual(record["neural_stress_category"], "Slight cold stress")
         self.assertEqual(record["polynomial_utci_c"], 3.8)
         self.assertEqual(record["polynomial_status"], "calculated")
+        self.assertEqual(record["polynomial_stress_category"], "Slight cold stress")
         self.assertEqual(record["inputs"]["wind_speed_m_s"], 0.0)
-        self.assertEqual(record["model_inputs"]["wind_speed_m_s"], 0.5)
-        self.assertEqual(record["model_inputs"]["relative_humidity_percent"], 5.0)
 
     def test_polynomial_result_is_unavailable_when_outside_its_input_range(self) -> None:
         observation = Observation(
@@ -156,6 +176,9 @@ class UpdateUTCITests(unittest.TestCase):
             self.assertEqual(len(history), 7)
             self.assertEqual(history[0]["date"], "2026-10-03")
             self.assertEqual(history[-1]["date"], "2026-10-09")
+            self.assertEqual(history[-1]["neural_stress_category"], "Slight cold stress")
+            self.assertEqual(history[-1]["polynomial_stress_category"], "Slight cold stress")
+            self.assertNotIn("model_inputs", history[-1])
 
     def test_non_noon_update_does_not_write_history(self) -> None:
         observation = Observation(

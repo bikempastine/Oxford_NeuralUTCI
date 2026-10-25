@@ -8,10 +8,12 @@ weather observations at the Oxford Physics roof station.
 - The latest station observation time, UTCI result, and every input used for
   both the Neural-UTCI and polynomial calculations.
 - Up to seven daily midday snapshots. Each history row keeps the original
-  observation time and its air temperature, assumed mean radiant temperature,
-  relative humidity, wind speed, and calculation time.
-- Both the station reading and the effective input after Neural-UTCI applies
-  its documented out-of-bounds clamping.
+  observation time, station readings, both model results, and both stress
+  categories.
+- Only the station readings used in each calculation, plus the clearly
+  identified MRT assumption.
+- A colour-coded thermal-stress category for each model result, following the
+  temperature bands shown on the page.
 
 Mean radiant temperature (MRT) is assumed to equal air temperature. It is not
 measured separately by this site.
@@ -27,6 +29,8 @@ and the library's default valid-range checking. Both outputs are shown rounded
 to one decimal place. If an input is outside the polynomial model's valid
 range, the polynomial value is recorded as unavailable rather than being
 clamped; the Neural-UTCI result remains available using its own clamping rule.
+The colour-coded stress categories are assigned to the rounded UTCI values
+using the thresholds shown on the page.
 The polynomial implementation's validity limits include −50 to 50 °C air
 temperature, 0.5 to 17 m/s wind speed, and 0 to 100% relative humidity. Since
 MRT is assumed equal to air temperature here, the MRT-to-air-temperature
@@ -34,12 +38,12 @@ difference is zero.
 
 Neural-UTCI's documented input ranges are air temperature −50 to 50 °C, MRT
 −80 to 120 °C, wind speed 0.5 to 30.3 m/s, and relative humidity 5 to 100%.
-When an observed value is outside its model range, the model clamps it to the
-nearest valid value. The website retains and displays both the observation and
-the value used by the model, including in the daily history. Wind speed is used
-as reported, with no adjustment to the model's documented 10 m reference. The
-station documents that its humidity sensor can
-briefly report 0% in saturated conditions.
+When a value falls outside a model's valid range, Neural-UTCI clamps it while
+the polynomial returns no result. The website displays the station reading,
+not a separate table of adjusted model inputs. Wind speed is used as reported,
+with no adjustment to the model's documented 10 m reference. The station
+documents that its humidity sensor can briefly report 0% in saturated
+conditions.
 
 The station notes that its measurements are provided without a warranty and
 are intended for non-commercial use. Please cite the station and its current

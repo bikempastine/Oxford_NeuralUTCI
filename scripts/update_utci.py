@@ -20,12 +20,16 @@ HISTORY_LIMIT = 7
 NUMBER_PATTERN = re.compile(r"[-+]?(?:\d+(?:\.\d*)?|\.\d+)")
 TIMESTAMP_PATTERN = re.compile(r"\d{2}-\d{2}-\d{4}\s+\d{2}:\d{2}:\d{2}\s+GMT")
 
-MODEL_RANGES = {
-    "air_temperature_c": (-50.0, 50.0),
-    "mean_radiant_temperature_c": (-80.0, 120.0),
-    "wind_speed_m_s": (0.5, 30.3),
-    "relative_humidity_percent": (5.0, 100.0),
-}
+STRESS_CATEGORIES = (
+    (38.0, "Very strong heat stress"),
+    (32.0, "Strong heat stress"),
+    (26.0, "Moderate heat stress"),
+    (9.0, "No thermal stress"),
+    (0.0, "Slight cold stress"),
+    (-13.0, "Moderate cold stress"),
+    (-27.0, "Strong cold stress"),
+    (-40.0, "Very strong cold stress"),
+)
 
 
 @dataclass(frozen=True)
@@ -132,21 +136,15 @@ def fetch_observation() -> Observation:
     return parse_station_page(page)
 
 
-def _clamp(value: float, limits: tuple[float, float]) -> float:
-    return min(max(value, limits[0]), limits[1])
-
-
-def model_inputs(observation: Observation) -> dict[str, float]:
-    raw_inputs = {
-        "air_temperature_c": observation.air_temperature_c,
-        "mean_radiant_temperature_c": observation.air_temperature_c,
-        "wind_speed_m_s": observation.wind_speed_m_s,
-        "relative_humidity_percent": observation.relative_humidity_percent,
-    }
-    return {
-        name: _clamp(value, MODEL_RANGES[name])
-        for name, value in raw_inputs.items()
-    }
+def classify_thermal_stress(value: float | None) -> str | None:
+    if value is None or not math.isfinite(value):
+        return None
+    if value > 46.0:
+        return "Extreme heat stress"
+    for threshold, category in STRESS_CATEGORIES:
+        if value >= threshold:
+            return category
+    return "Extreme cold stress"
 
 
 def calculate_record(
@@ -202,12 +200,13 @@ def calculate_record(
         "calculated_at": (calculated_at or datetime.now(timezone.utc)).isoformat(),
         "utci_c": round(value, 1),
         "neural_utci_c": round(value, 1),
+        "neural_stress_category": classify_thermal_stress(round(value, 1)),
         "polynomial_utci_c": polynomial_value,
         "polynomial_status": (
             "calculated" if polynomial_value is not None else "outside_model_range"
         ),
+        "polynomial_stress_category": classify_thermal_stress(polynomial_value),
         "inputs": raw_inputs,
-        "model_inputs": model_inputs(observation),
     }
 
 

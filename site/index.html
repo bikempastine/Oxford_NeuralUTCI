@@ -20,27 +20,29 @@
       </header>
 
       <section aria-labelledby="latest-heading">
-        <h2 id="latest-heading">Latest calculation</h2>
+        <h2 id="latest-heading">Latest station reading</h2>
         <p id="load-status" role="status">Loading the latest calculation…</p>
         <div id="current-calculation" hidden>
           <div class="results">
             <div class="result">
               <h3>Neural-UTCI</h3>
-              <p class="utci-value"><span id="neural-utci-value"></span><span> °C</span></p>
+              <p class="utci-value" id="neural-utci-value"></p>
+              <p class="stress-category" id="neural-stress-category"></p>
             </div>
             <div class="result">
               <h3>Polynomial UTCI</h3>
-              <p class="utci-value"><span id="polynomial-utci-value"></span><span> °C</span></p>
+              <p class="utci-value" id="polynomial-utci-value"></p>
+              <p class="stress-category" id="polynomial-stress-category"></p>
               <p id="polynomial-status" class="muted"></p>
             </div>
           </div>
           <p id="observation-time" class="muted"></p>
           <p id="calculation-time" class="muted"></p>
-          <h3>Weather inputs for this calculation</h3>
+          <h3>Station readings and MRT assumption</h3>
           <div class="table-wrap">
             <table>
               <thead>
-                <tr><th scope="col">Input</th><th scope="col">Station reading</th><th scope="col">Value used by Neural-UTCI</th></tr>
+                <tr><th scope="col">Input</th><th scope="col">Station reading or assumption</th></tr>
               </thead>
               <tbody id="current-inputs"></tbody>
             </table>
@@ -60,14 +62,15 @@
             <thead>
               <tr>
                 <th scope="col">Oxford date</th>
-                <th scope="col">Calculated at</th>
                 <th scope="col">Station observation time</th>
                 <th scope="col">Neural-UTCI (°C)</th>
+                <th scope="col">Neural stress category</th>
                 <th scope="col">Polynomial UTCI (°C)</th>
-                <th scope="col">Air temp. (station → model, °C)</th>
-                <th scope="col">MRT (station → model, °C)</th>
-                <th scope="col">Humidity (station → model, %)</th>
-                <th scope="col">Wind (station → model, m/s)</th>
+                <th scope="col">Polynomial stress category</th>
+                <th scope="col">Air temperature (°C)</th>
+                <th scope="col">MRT (assumed, °C)</th>
+                <th scope="col">Relative humidity (%)</th>
+                <th scope="col">Wind speed (m/s)</th>
               </tr>
             </thead>
             <tbody id="history-rows"></tbody>
@@ -81,6 +84,7 @@
           <li>The updater reads air temperature, relative humidity, wind speed, and the observation time from the Oxford Physics roof station's current-weather page.</li>
           <li>It passes those measurements to <a href="https://github.com/bikempastine/NeuralUTCI">Neural-UTCI</a> to calculate UTCI.</li>
           <li>It passes the same station measurements to <a href="https://pythermalcomfort.readthedocs.io/en/latest/documentation/models.html#utci">pythermalcomfort</a> to calculate the polynomial UTCI approximation.</li>
+          <li>Each result gets a thermal-stress category based on its UTCI value and the bands below.</li>
           <li>Mean radiant temperature (MRT) is assumed to equal air temperature. It is an assumption, not a separate station measurement.</li>
           <li>Wind speed is passed through as the station reports it; no adjustment to the model's documented 10 m wind reference is applied.</li>
           <li>The latest calculation and its inputs are refreshed daily around midday Oxford time. One snapshot is added to the history each day; older snapshots beyond seven days are removed.</li>
@@ -92,8 +96,16 @@
           from 5 to 100%. The model is called with its documented
           <code>oob="clamp"</code> option: values outside those ranges are
           limited to the nearest accepted value for the calculation. The tables
-          show both the original station reading and the value used by the model,
-          so any adjustment is visible.
+          show the original station readings only; MRT is listed as an assumption.
+        </p>
+        <h3>Thermal-stress colour bands</h3>
+        <p>
+          Above 46 °C: extreme heat stress; 38–46: very strong heat stress;
+          32–38: strong heat stress; 26–32: moderate heat stress; 9–26: no
+          thermal stress; 0–9: slight cold stress; −13–0: moderate cold stress;
+          −27 to −13: strong cold stress; −40 to −27: very strong cold stress;
+          below −40: extreme cold stress. At shared boundaries, the warmer
+          category applies, except that exactly 46 °C is very strong heat stress.
         </p>
         <p>
           The polynomial calculation uses the original station inputs without
