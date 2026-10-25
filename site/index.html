@@ -12,13 +12,10 @@
     <main>
       <header>
         <h1>UTCI Oxford</h1>
-        <p id="reading-datetime" class="reading-datetime" aria-live="polite">
-          Loading latest station reading…
-        </p>
       </header>
 
       <section aria-labelledby="latest-heading">
-        <h2 id="latest-heading">Latest UTCI calculation</h2>
+        <h2 id="latest-heading">Oxford UTCI last updated</h2>
         <p id="load-status" role="status">Loading the latest calculation…</p>
         <div id="current-calculation" hidden>
           <div class="results">
@@ -28,11 +25,34 @@
               <p class="stress-category" id="neural-stress-category"></p>
             </div>
             <div class="result">
-              <h3>Polynomial UTCI</h3>
+              <h3>Polynomial-UTCI</h3>
               <p class="utci-value" id="polynomial-utci-value"></p>
               <p class="stress-category" id="polynomial-stress-category"></p>
               <p id="polynomial-status" class="muted"></p>
             </div>
+          </div>
+          <h3>UTCI categories</h3>
+          <div class="table-wrap">
+            <table class="category-key">
+              <thead>
+                <tr>
+                  <th scope="col">Thermal-stress category</th>
+                  <th scope="col">UTCI range (°C)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><span class="stress-category extreme-heat">Extreme heat stress</span></td><td>&gt; +46</td></tr>
+                <tr><td><span class="stress-category very-strong-heat">Very strong heat stress</span></td><td>+38 to +46</td></tr>
+                <tr><td><span class="stress-category strong-heat">Strong heat stress</span></td><td>+32 to &lt; +38</td></tr>
+                <tr><td><span class="stress-category moderate-heat">Moderate heat stress</span></td><td>+26 to &lt; +32</td></tr>
+                <tr><td><span class="stress-category no-stress">No thermal stress</span></td><td>+9 to &lt; +26</td></tr>
+                <tr><td><span class="stress-category slight-cold">Slight cold stress</span></td><td>0 to &lt; +9</td></tr>
+                <tr><td><span class="stress-category moderate-cold">Moderate cold stress</span></td><td>−13 to &lt; 0</td></tr>
+                <tr><td><span class="stress-category strong-cold">Strong cold stress</span></td><td>−27 to &lt; −13</td></tr>
+                <tr><td><span class="stress-category very-strong-cold">Very strong cold stress</span></td><td>−40 to &lt; −27</td></tr>
+                <tr><td><span class="stress-category extreme-cold">Extreme cold stress</span></td><td>&lt; −40</td></tr>
+              </tbody>
+            </table>
           </div>
           <p id="calculation-time" class="muted"></p>
           <h3>Station readings</h3>
@@ -49,8 +69,7 @@
             <p>
               The Physics roof station does not measure MRT, which is one of
               the inputs needed to calculate UTCI. For both models, this page
-              assumes MRT equals the station's air temperature. The dash in the
-              table means MRT is assumed, not a separate station reading.
+              assumes MRT equals the station's air temperature.
             </p>
           </aside>
         </div>

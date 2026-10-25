@@ -107,8 +107,8 @@ function renderCurrent(record) {
     record.polynomial_status === "outside_model_range"
       ? "An input is outside the polynomial model's valid range."
       : "";
-  document.getElementById("reading-datetime").textContent =
-    `${formatTimestamp(record.observed_at)}.`;
+  document.getElementById("latest-heading").textContent =
+    `Oxford UTCI last updated ${formatTimestamp(record.observed_at)}.`;
   document.getElementById("calculation-time").textContent =
     `UTCI calculated: ${formatTimestamp(record.calculated_at)} Oxford time`;
 

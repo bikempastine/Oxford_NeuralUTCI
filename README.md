@@ -10,7 +10,7 @@ weather observations at the Oxford Physics roof station.
 - Only the station readings used in each calculation, plus the clearly
   identified MRT assumption.
 - A colour-coded thermal-stress category for each model result, following the
-  temperature bands shown on the page.
+  temperature bands shown in the category table on the page.
 
 Mean radiant temperature (MRT) is assumed to equal air temperature. It is not
 measured separately by this site.
