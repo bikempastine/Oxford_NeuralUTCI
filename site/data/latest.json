@@ -1,20 +1,38 @@
 {
   "current": {
-    "observed_at": "2026-10-22T22:28:07+00:00",
-    "calculated_at": "2026-10-22T22:33:10.886261+00:00",
-    "utci_c": 6.6,
-    "neural_utci_c": 6.6,
-    "neural_stress_category": "Slight cold stress",
-    "polynomial_utci_c": 7.1,
-    "polynomial_stress_category": "Slight cold stress",
+    "observed_at": "2026-10-25T12:47:04+00:00",
+    "calculated_at": "2026-10-25T12:51:45.543092+00:00",
+    "utci_c": -1.4,
+    "neural_utci_c": -1.4,
+    "neural_stress_category": "Moderate cold stress",
+    "polynomial_utci_c": -0.1,
     "polynomial_status": "calculated",
+    "polynomial_stress_category": "Moderate cold stress",
     "inputs": {
-      "air_temperature_c": 9.4,
-      "mean_radiant_temperature_c": 9.4,
-      "wind_speed_m_s": 2.2,
-      "relative_humidity_percent": 92.8
+      "air_temperature_c": 10.6,
+      "mean_radiant_temperature_c": 10.6,
+      "wind_speed_m_s": 5.0,
+      "relative_humidity_percent": 41.4
     }
   },
-  "history": [],
-  "updated_at": "2026-10-22T22:33:10.886261+00:00"
+  "history": [
+    {
+      "observed_at": "2026-10-25T12:47:04+00:00",
+      "calculated_at": "2026-10-25T12:51:45.543092+00:00",
+      "utci_c": -1.4,
+      "neural_utci_c": -1.4,
+      "neural_stress_category": "Moderate cold stress",
+      "polynomial_utci_c": -0.1,
+      "polynomial_status": "calculated",
+      "polynomial_stress_category": "Moderate cold stress",
+      "inputs": {
+        "air_temperature_c": 10.6,
+        "mean_radiant_temperature_c": 10.6,
+        "wind_speed_m_s": 5.0,
+        "relative_humidity_percent": 41.4
+      },
+      "date": "2026-10-25"
+    }
+  ],
+  "updated_at": "2026-10-25T12:51:45.543092+00:00"
 }
