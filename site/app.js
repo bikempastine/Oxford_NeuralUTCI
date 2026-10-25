@@ -1,6 +1,5 @@
 const inputRows = [
   ["Air temperature", "air_temperature_c", "°C"],
-  ["Mean radiant temperature (assumed)", "mean_radiant_temperature_c", "°C"],
   ["Relative humidity", "relative_humidity_percent", "%"],
   ["Wind speed", "wind_speed_m_s", "m/s"],
 ];
@@ -58,8 +57,11 @@ function formatTimestamp(value) {
     return "Unknown time";
   }
   return new Intl.DateTimeFormat("en-GB", {
-    dateStyle: "medium",
-    timeStyle: "short",
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
     timeZone: "Europe/London",
   }).format(date);
 }
@@ -105,12 +107,10 @@ function renderCurrent(record) {
     record.polynomial_status === "outside_model_range"
       ? "An input is outside the polynomial model's valid range."
       : "";
-  document.getElementById("observation-time").textContent =
-    `Station observation: ${formatTimestamp(record.observed_at)} Oxford time`;
+  document.getElementById("reading-datetime").textContent =
+    `${formatTimestamp(record.observed_at)}.`;
   document.getElementById("calculation-time").textContent =
-    `Calculated: ${formatTimestamp(record.calculated_at)} Oxford time`;
-  document.getElementById("latest-heading").textContent =
-    `Reading: ${formatTimestamp(record.observed_at)} Oxford time`;
+    `UTCI calculated: ${formatTimestamp(record.calculated_at)} Oxford time`;
 
   const body = document.getElementById("current-inputs");
   for (const [label, key, unit] of inputRows) {
@@ -119,50 +119,13 @@ function renderCurrent(record) {
     addCell(row, formatValue(record.inputs[key], unit));
     body.append(row);
   }
+  const mrtRow = document.createElement("tr");
+  addCell(mrtRow, "Mean radiant temperature (MRT)");
+  addCell(mrtRow, "-");
+  body.append(mrtRow);
 
   document.getElementById("current-calculation").hidden = false;
   document.getElementById("load-status").hidden = true;
-}
-
-function renderHistory(records) {
-  if (!records.length) {
-    return;
-  }
-
-  const body = document.getElementById("history-rows");
-  for (const record of [...records].reverse()) {
-    const row = document.createElement("tr");
-    addCell(row, record.date);
-    addCell(row, formatTimestamp(record.observed_at));
-    const neuralValue = record.neural_utci_c ?? record.utci_c;
-    addCell(row, `${Number(neuralValue).toFixed(1)} °C`);
-    const neuralStress = record.neural_stress_category ??
-      thermalStressCategory(Number(neuralValue));
-    const neuralCategoryCell = document.createElement("td");
-    setStressCategory(neuralCategoryCell, neuralStress);
-    row.append(neuralCategoryCell);
-    addCell(
-      row,
-      hasPolynomialValue(record)
-        ? `${Number(record.polynomial_utci_c).toFixed(1)} °C`
-        : "N/A",
-    );
-    const polynomialCategoryCell = document.createElement("td");
-    const polynomialStress = record.polynomial_stress_category ??
-      (hasPolynomialValue(record)
-        ? thermalStressCategory(Number(record.polynomial_utci_c))
-        : "Unavailable");
-    setStressCategory(polynomialCategoryCell, polynomialStress);
-    row.append(polynomialCategoryCell);
-    addCell(row, formatValue(record.inputs.air_temperature_c, "°C"));
-    addCell(row, formatValue(record.inputs.mean_radiant_temperature_c, "°C"));
-    addCell(row, formatValue(record.inputs.relative_humidity_percent, "%"));
-    addCell(row, formatValue(record.inputs.wind_speed_m_s, "m/s"));
-    body.append(row);
-  }
-
-  document.getElementById("history-empty").hidden = true;
-  document.getElementById("history-table").hidden = false;
 }
 
 async function loadData() {
@@ -177,7 +140,6 @@ async function loadData() {
     document.getElementById("load-status").textContent =
       "The first calculation has not run yet. It will appear after the workflow is started.";
   }
-  renderHistory(data.history ?? []);
 }
 
 loadData().catch((error) => {

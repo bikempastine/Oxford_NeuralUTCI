@@ -7,9 +7,6 @@ weather observations at the Oxford Physics roof station.
 
 - The latest station observation time, UTCI result, and every input used for
   both the Neural-UTCI and polynomial calculations.
-- Up to seven daily midday snapshots. Each history row keeps the original
-  observation time, station readings, both model results, and both stress
-  categories.
 - Only the station readings used in each calculation, plus the clearly
   identified MRT assumption.
 - A colour-coded thermal-stress category for each model result, following the
@@ -63,7 +60,8 @@ python -m http.server 8000 --directory site
 The updater fetches the current observation and writes `site/data/latest.json`.
 It records history only during the Oxford-local noon hour; `--force` allows the
 current reading to be refreshed at another time without creating a non-noon
-history entry.
+history entry. Daily history remains stored in the data file but is not shown
+on the website.
 
 ## GitHub Actions and Pages
 

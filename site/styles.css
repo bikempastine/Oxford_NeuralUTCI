@@ -79,6 +79,12 @@ h3 {
   margin-bottom: 0;
 }
 
+.reading-datetime {
+  margin-bottom: 0;
+  color: #536477;
+  font-size: 1.2rem;
+}
+
 .utci-value {
   margin: 0.5rem 0;
   font-size: clamp(2.5rem, 8vw, 4rem);
