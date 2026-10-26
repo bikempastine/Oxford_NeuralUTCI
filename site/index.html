@@ -13,9 +13,18 @@
       <header>
         <p class="eyebrow">OXFORD · FEELS-LIKE TEMPERATURE · UTCI PHYSICS ROOF STATION</p>
         <h1>How does Oxford feel today?</h1>
-        <p class="intro">
-          Calculating feels-like temperature in Oxford using Neural-UTCI and
-          the trained polynomial UTCI model.
+        <p class="intro intro-desktop">
+          Two models. One Oxford forecast. Compare
+          <a href="https://doi.org/10.48550/arXiv.2609.35949"
+            target="_blank" rel="noopener noreferrer">Neural-UTCI</a>
+          with our trained polynomial estimate, based on the operational UTCI
+          framework described by
+          <a href="https://doi.org/10.1007/s00484-011-0454-1"
+            target="_blank" rel="noopener noreferrer">Bröde et al. (2012)</a>.
+        </p>
+        <p class="intro intro-mobile">
+          Two models. One Oxford forecast. Explore Neural-UTCI and a trained
+          polynomial estimate of Oxford's feels-like temperature.
         </p>
       </header>
 
@@ -40,12 +49,6 @@
               </div>
               <p class="stress-category" id="neural-stress-category"></p>
               <p class="stress-guidance" id="neural-stress-guidance"></p>
-              <p class="model-citation">
-                <a href="https://doi.org/10.48550/arXiv.2609.35949"
-                  target="_blank" rel="noopener noreferrer">
-                  Neural-UTCI paper · DOI
-                </a>
-              </p>
             </div>
             <div class="result">
               <h3>Polynomial-UTCI</h3>
@@ -66,6 +69,18 @@
               <p id="polynomial-status" class="muted"></p>
             </div>
           </div>
+          <section class="mobile-influences" aria-labelledby="mobile-influences-heading">
+            <h3 id="mobile-influences-heading">What is shaping this estimate?</h3>
+            <p class="mobile-influence-baseline" id="mobile-influence-baseline"></p>
+            <div class="mobile-influence-card">
+              <h3>Neural-UTCI</h3>
+              <div id="neural-mobile-influences"></div>
+            </div>
+            <div class="mobile-influence-card">
+              <h3>Polynomial-UTCI</h3>
+              <div id="polynomial-mobile-influences"></div>
+            </div>
+          </section>
           <h3>Station readings</h3>
           <div id="current-inputs" class="station-dashboard" role="list"
             aria-label="Current station readings"></div>
@@ -172,6 +187,10 @@
         <p>
           Source: <a href="https://eodg.atm.ox.ac.uk/eodg/weather/weather.html">Oxford Physics roof weather station</a>.
           UTCI is an estimate based on the stated inputs and mean radiant temperature assumption.
+        </p>
+        <p>
+          Neural-UTCI: <a href="https://doi.org/10.48550/arXiv.2609.35949"
+            target="_blank" rel="noopener noreferrer">paper and DOI</a>.
         </p>
       </footer>
     </main>

@@ -14,7 +14,7 @@
 }
 
 body {
-  min-width: 320px;
+  min-width: 0;
   margin: 0;
   line-height: 1.55;
   background: #edf5f9;
@@ -83,6 +83,10 @@ h4 {
   margin-bottom: 0;
   color: #647985;
   font-size: 1rem;
+}
+
+.intro-mobile {
+  display: none;
 }
 
 #latest-heading {
@@ -166,6 +170,7 @@ h4 {
 
 .result h3 {
   margin: 0 0 0.4rem;
+  min-height: 1.5em;
   color: #2b4d61;
   font-family: Georgia, "Times New Roman", serif;
   font-size: 1.35rem;
@@ -173,7 +178,7 @@ h4 {
 }
 
 .model-description {
-  min-height: 0;
+  min-height: 3.1em;
   margin: 0 0 0.8rem;
   color: #647f8d;
   font-size: 0.84rem;
@@ -183,6 +188,10 @@ h4 {
   margin: auto 0 0;
   padding-top: 1rem;
   font-size: 0.76rem;
+}
+
+.mobile-influences {
+  display: none;
 }
 
 .utci-explanation {
@@ -710,17 +719,166 @@ a:focus-visible {
     padding-top: 1.2rem;
   }
 
+  .intro-desktop {
+    display: none;
+  }
+
+  .intro-mobile {
+    display: block;
+  }
+
   .results {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .result {
-    padding: 1.3rem;
+    padding: 1rem 0.8rem;
   }
 
   .result + .result {
-    border-top: 1px solid rgb(35 70 91 / 12%);
-    border-left: 0;
+    border-left: 1px solid rgb(35 70 91 / 12%);
+  }
+
+  .result h3 {
+    height: 2.6em;
+    font-size: 1.08rem;
+  }
+
+  .model-description {
+    min-height: 6.4rem;
+    font-size: 0.74rem;
+  }
+
+  .utci-value {
+    font-size: clamp(2rem, 8vw, 3rem);
+  }
+
+  .stress-category {
+    max-width: 100%;
+    min-height: 1.6rem;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.66rem;
+    white-space: normal;
+  }
+
+  .stress-guidance {
+    padding: 0.65rem;
+    font-size: 0.76rem;
+  }
+
+  .guidance-label {
+    font-size: 0.59rem;
+  }
+
+  .model-citation {
+    font-size: 0.68rem;
+  }
+
+  .mobile-influences {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 0.85rem;
+    margin: -0.8rem 0 1.5rem;
+    padding: 0.9rem 1rem 1rem;
+    border: 1px solid #cbdde6;
+    border-radius: 10px;
+    background: #f8fbfc;
+    box-shadow: 0 8px 22px rgb(50 94 116 / 9%);
+  }
+
+  .mobile-influences > #mobile-influences-heading,
+  .mobile-influences > .mobile-influence-baseline {
+    grid-column: 1 / -1;
+  }
+
+  .mobile-influences > #mobile-influences-heading {
+    margin: 0 0 0.2rem;
+    color: #34586b;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 1.08rem;
+    font-weight: 400;
+  }
+
+  .mobile-influence-baseline {
+    margin: 0 0 0.75rem;
+    color: #6a808a;
+    font-size: 0.7rem;
+  }
+
+  .mobile-influence-card {
+    min-width: 0;
+    padding: 0;
+  }
+
+  .mobile-influence-card + .mobile-influence-card {
+    padding-left: 0.75rem;
+    border-left: 1px solid #d8e5ea;
+  }
+
+  .mobile-influence-card h3 {
+    margin: 0 0 0.5rem;
+    color: #2b4d61;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 0.9rem;
+    font-weight: 400;
+  }
+
+  .mobile-influence-card .influence-popover {
+    position: static;
+    width: auto;
+    padding: 0;
+    overflow-wrap: anywhere;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  .mobile-influence-card .influence-popover::before {
+    content: none;
+  }
+
+  .mobile-influence-card .influence-popover h4 {
+    display: none;
+  }
+
+  .mobile-influence-card .influence-baseline {
+    display: none;
+  }
+
+  .mobile-influence-card .influence-list {
+    gap: 0.65rem;
+  }
+
+  .mobile-influence-card .influence-item {
+    grid-template-columns: 0.8rem minmax(0, 1fr);
+    grid-template-rows: auto 0.28rem;
+    gap: 0.25rem 0.3rem;
+    font-size: 0.7rem;
+  }
+
+  .mobile-influence-card .influence-direction {
+    font-size: 0.85rem;
+  }
+
+  .mobile-influence-card .influence-name {
+    overflow-wrap: anywhere;
+  }
+
+  .mobile-influence-card .influence-magnitude {
+    grid-column: 2;
+    grid-row: 2;
+    font-size: 0.62rem;
+    text-align: left;
+  }
+
+  .mobile-influence-card .influence-track {
+    grid-column: 2;
+    grid-row: 3;
   }
 
   .station-dashboard {
@@ -729,6 +887,11 @@ a:focus-visible {
 
   .influence-popover {
     width: min(400px, calc(100vw - 3.5rem));
+  }
+
+  #polynomial-influences {
+    right: 0;
+    left: auto;
   }
 
   .guidance-table {

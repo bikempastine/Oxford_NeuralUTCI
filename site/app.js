@@ -108,6 +108,10 @@ function renderShap(modelName, explanation, record) {
     `Compared with ${Number(referenceInputs.air_temperature_c).toFixed(0)} °C air, ` +
     `${Number(referenceInputs.wind_speed_m_s).toFixed(0)} m/s wind, and ` +
     `${Number(referenceInputs.relative_humidity_percent).toFixed(0)}% humidity`;
+  const mobileReference = document.getElementById("mobile-influence-baseline");
+  if (mobileReference) {
+    mobileReference.textContent = referenceElement.textContent;
+  }
 
   const influences = shapRows.map(([label, key]) => ({
     label,
@@ -165,15 +169,38 @@ function initializeInfluencePopover(modelName) {
   const wrapper = document.getElementById(`${modelName}-explanation`);
   const button = document.getElementById(`${modelName}-utci-value`);
   const popover = document.getElementById(`${modelName}-influences`);
+  const mobileContainer = document.getElementById(`${modelName}-mobile-influences`);
+  const placeholder = document.createComment("Influence popover position");
+  const mobileLayout = window.matchMedia("(max-width: 700px)");
   let pinnedOpen = false;
 
   const updateVisibility = () => {
+    if (mobileLayout.matches) {
+      button.setAttribute("aria-expanded", "false");
+      popover.setAttribute("aria-hidden", "false");
+      return;
+    }
+
     const visible = pinnedOpen ||
       wrapper.matches(":hover") ||
       wrapper.contains(document.activeElement);
     button.setAttribute("aria-expanded", String(visible));
     popover.setAttribute("aria-hidden", String(!visible));
     wrapper.classList.toggle("is-open", visible);
+  };
+
+  popover.before(placeholder);
+  const updatePlacement = () => {
+    if (mobileLayout.matches) {
+      mobileContainer.append(popover);
+      popover.setAttribute("role", "region");
+      popover.setAttribute("aria-label", `${modelName} input influences`);
+    } else {
+      placeholder.after(popover);
+      popover.setAttribute("role", "tooltip");
+      popover.setAttribute("aria-label", "");
+    }
+    updateVisibility();
   };
 
   wrapper.addEventListener("pointerenter", updateVisibility);
@@ -183,9 +210,14 @@ function initializeInfluencePopover(modelName) {
     requestAnimationFrame(updateVisibility);
   });
   button.addEventListener("click", () => {
+    if (mobileLayout.matches) {
+      return;
+    }
     pinnedOpen = !pinnedOpen;
     updateVisibility();
   });
+  mobileLayout.addEventListener("change", updatePlacement);
+  updatePlacement();
 }
 
 function formatTimestamp(value) {
