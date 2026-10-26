@@ -13,9 +13,12 @@ from current observations at the Physics roof station.
 - A colour-coded thermal-stress category for each model result, following the
   temperature bands, symptoms, and general guidance shown in the category
   table on the page.
+- A result panel tinted to match each model's current thermal-stress category,
+  and a horizontal dashboard of the current station readings.
 - The selected category's general recommendation beneath each model result.
 - A hover and keyboard-accessible visual summary of how each input influences
-  the model result, ranked by relative contribution size.
+  the model result, ranked by relative contribution size and calculated
+  separately for each model.
 
 Mean radiant temperature is assumed to equal air temperature. It is not
 measured separately by this site.
@@ -36,6 +39,9 @@ using the thresholds shown on the page.
 The input influence summary uses exact Shapley attribution across the model's
 four inputs, with reference conditions of 20 °C air temperature, mean radiant
 temperature equal to air temperature, 1 m/s wind, and 50% relative humidity.
+Neural-UTCI and the polynomial model are evaluated independently for each
+reference/current input combination; each explanation's contributions sum to
+that model's change from its own reference prediction.
 The display shows air temperature, wind, and relative humidity, ranked by
 direction and relative magnitude; it does not display exact contribution
 values. These are model explanations, not causal effects.

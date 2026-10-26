@@ -151,6 +151,89 @@ class UpdateUTCITests(unittest.TestCase):
             )
         )
 
+    def test_neural_and_polynomial_shap_use_their_own_model_predictions(self) -> None:
+        observation = Observation(
+            observed_at=datetime(2026, 10, 22, 21, 18, tzinfo=timezone.utc),
+            air_temperature_c=12.0,
+            relative_humidity_percent=65.0,
+            wind_speed_m_s=2.0,
+        )
+
+        def neural_model(
+            *, Ta: float, Tr: float, va: float, rH: float, oob: str
+        ) -> float:
+            return 3.0 + Ta + 2.0 * Tr + 5.0 * va + 0.03 * rH + 0.1 * Ta * va
+
+        def polynomial_model(
+            *,
+            tdb: float,
+            tr: float,
+            v: float,
+            rh: float,
+            units: str,
+            limit_inputs: bool,
+            round_output: bool,
+        ) -> SimpleNamespace:
+            return SimpleNamespace(
+                utci=-2.0 + 0.8 * tdb + 0.25 * tr + 1.2 * v - 0.01 * rh
+                + 0.05 * tdb * rh
+            )
+
+        record = calculate_record(
+            observation,
+            model_function=neural_model,
+            polynomial_function=polynomial_model,
+        )
+        shap = record["shap"]
+        current = (
+            observation.air_temperature_c,
+            0.0,
+            observation.wind_speed_m_s,
+            observation.relative_humidity_percent,
+        )
+
+        expected_predictions = {
+            "neural": neural_model(
+                Ta=current[0],
+                Tr=current[0] + current[1],
+                va=current[2],
+                rH=current[3],
+                oob="clamp",
+            ),
+            "polynomial": polynomial_model(
+                tdb=current[0],
+                tr=current[0] + current[1],
+                v=current[2],
+                rh=current[3],
+                units="SI",
+                limit_inputs=True,
+                round_output=False,
+            ).utci,
+        }
+        for contribution_key in ("neural", "polynomial"):
+            explanation = shap[contribution_key]
+            self.assertAlmostEqual(
+                explanation["reference_utci_c"]
+                + sum(explanation["contributions_c"].values()),
+                expected_predictions[contribution_key],
+                places=10,
+            )
+
+        for contribution_key, output_key in (
+            ("neural", "neural_utci_c"),
+            ("polynomial", "polynomial_utci_c"),
+        ):
+            self.assertAlmostEqual(
+                round(expected_predictions[contribution_key], 1),
+                float(record[output_key]),
+                places=10,
+            )
+
+        self.assertNotEqual(
+            shap["neural"]["contributions_c"],
+            shap["polynomial"]["contributions_c"],
+        )
+
     def test_polynomial_result_is_unavailable_when_outside_its_input_range(self) -> None:
         observation = Observation(
             observed_at=datetime(2026, 10, 22, 21, 18, tzinfo=timezone.utc),

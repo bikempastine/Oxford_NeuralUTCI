@@ -10,6 +10,19 @@ const shapRows = [
   ["Relative humidity", "relative_humidity_percent"],
 ];
 
+const categoryClasses = {
+  "Extreme heat stress": "extreme-heat",
+  "Very strong heat stress": "very-strong-heat",
+  "Strong heat stress": "strong-heat",
+  "Moderate heat stress": "moderate-heat",
+  "No thermal stress": "no-stress",
+  "Slight cold stress": "slight-cold",
+  "Moderate cold stress": "moderate-cold",
+  "Strong cold stress": "strong-cold",
+  "Very strong cold stress": "very-strong-cold",
+  "Extreme cold stress": "extreme-cold",
+};
+
 function formatValue(value, unit) {
   return `${Number(value).toFixed(1)} ${unit}`;
 }
@@ -21,19 +34,17 @@ function hasPolynomialValue(record) {
 }
 
 function categoryClass(category) {
-  const classes = {
-    "Extreme heat stress": "extreme-heat",
-    "Very strong heat stress": "very-strong-heat",
-    "Strong heat stress": "strong-heat",
-    "Moderate heat stress": "moderate-heat",
-    "No thermal stress": "no-stress",
-    "Slight cold stress": "slight-cold",
-    "Moderate cold stress": "moderate-cold",
-    "Strong cold stress": "strong-cold",
-    "Very strong cold stress": "very-strong-cold",
-    "Extreme cold stress": "extreme-cold",
-  };
-  return classes[category] ?? "";
+  return categoryClasses[category] ?? "";
+}
+
+function setResultCategory(element, category) {
+  for (const stressClass of Object.values(categoryClasses)) {
+    element.classList.remove(`stress-${stressClass}`);
+  }
+  const stressClass = categoryClass(category);
+  if (stressClass) {
+    element.classList.add(`stress-${stressClass}`);
+  }
 }
 
 function thermalStressCategory(value) {
@@ -62,7 +73,15 @@ function setStressGuidance(element, category) {
     document.querySelectorAll(".guidance-table tbody tr"),
   ).find((row) => row.cells[0].textContent.trim() === category);
   if (matchingRow) {
-    element.textContent = `General recommendation: ${matchingRow.cells[3].textContent.trim()}`;
+    const label = document.createElement("span");
+    label.className = "guidance-label";
+    label.textContent = "General recommendation";
+
+    const recommendation = document.createElement("span");
+    recommendation.className = "guidance-text";
+    recommendation.textContent = matchingRow.cells[3].textContent.trim();
+
+    element.replaceChildren(label, recommendation);
   }
 }
 
@@ -177,10 +196,21 @@ function formatTimestamp(value) {
   }).format(date);
 }
 
-function addCell(row, value) {
-  const cell = document.createElement("td");
-  cell.textContent = value;
-  row.append(cell);
+function addStationReading(container, label, value) {
+  const item = document.createElement("div");
+  item.className = "station-reading";
+  item.setAttribute("role", "listitem");
+
+  const name = document.createElement("span");
+  name.className = "station-reading-label";
+  name.textContent = label;
+
+  const reading = document.createElement("strong");
+  reading.className = "station-reading-value";
+  reading.textContent = value;
+
+  item.append(name, reading);
+  container.append(item);
 }
 
 function renderCurrent(record) {
@@ -188,14 +218,14 @@ function renderCurrent(record) {
   const neuralStress = record.neural_stress_category ??
     thermalStressCategory(Number(neuralValue));
   const neuralValueElement = document.getElementById("neural-utci-value");
+  const neuralResult = neuralValueElement.closest(".result");
   const neuralDescription = document.getElementById("neural-description");
   neuralDescription.textContent =
     "A neural-network model that estimates UTCI from the station's weather readings.";
   neuralValueElement.textContent = `${Number(neuralValue).toFixed(1)} °C`;
   const neuralClass = categoryClass(neuralStress);
-  if (neuralClass) {
-    neuralValueElement.classList.add(neuralClass);
-  }
+  neuralValueElement.className = `utci-value ${neuralClass}`;
+  setResultCategory(neuralResult, neuralStress);
   setStressCategory(
     document.getElementById("neural-stress-category"),
     neuralStress,
@@ -207,6 +237,7 @@ function renderCurrent(record) {
   renderShap("neural", record.shap?.neural, record);
 
   const polynomialValueElement = document.getElementById("polynomial-utci-value");
+  const polynomialResult = polynomialValueElement.closest(".result");
   const polynomialCategoryElement = document.getElementById("polynomial-stress-category");
   document.getElementById("polynomial-description").textContent =
     "The traditional UTCI model, calculated using its established polynomial approximation.";
@@ -216,9 +247,8 @@ function renderCurrent(record) {
     polynomialValueElement.textContent =
       `${Number(record.polynomial_utci_c).toFixed(1)} °C`;
     const polynomialClass = categoryClass(polynomialStress);
-    if (polynomialClass) {
-      polynomialValueElement.classList.add(polynomialClass);
-    }
+    polynomialValueElement.className = `utci-value ${polynomialClass}`;
+    setResultCategory(polynomialResult, polynomialStress);
     setStressCategory(polynomialCategoryElement, polynomialStress);
     setStressGuidance(
       document.getElementById("polynomial-stress-guidance"),
@@ -226,7 +256,10 @@ function renderCurrent(record) {
     );
   } else {
     polynomialValueElement.textContent = "N/A";
+    polynomialValueElement.className = "utci-value";
+    setResultCategory(polynomialResult, "");
     polynomialCategoryElement.textContent = "Unavailable";
+    document.getElementById("polynomial-stress-guidance").textContent = "";
   }
   renderShap("polynomial", record.shap?.polynomial, record);
   document.getElementById("polynomial-status").textContent =
@@ -238,15 +271,9 @@ function renderCurrent(record) {
 
   const body = document.getElementById("current-inputs");
   for (const [label, key, unit] of inputRows) {
-    const row = document.createElement("tr");
-    addCell(row, label);
-    addCell(row, formatValue(record.inputs[key], unit));
-    body.append(row);
+    addStationReading(body, label, formatValue(record.inputs[key], unit));
   }
-  const mrtRow = document.createElement("tr");
-  addCell(mrtRow, "Mean radiant temperature");
-  addCell(mrtRow, "Not measured");
-  body.append(mrtRow);
+  addStationReading(body, "Mean radiant temperature", "Not measured");
 
   document.getElementById("current-calculation").hidden = false;
   document.getElementById("load-status").hidden = true;
