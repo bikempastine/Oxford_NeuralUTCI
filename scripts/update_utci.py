@@ -19,6 +19,18 @@ LONDON = ZoneInfo("Europe/London")
 HISTORY_LIMIT = 7
 NUMBER_PATTERN = re.compile(r"[-+]?(?:\d+(?:\.\d*)?|\.\d+)")
 TIMESTAMP_PATTERN = re.compile(r"\d{2}-\d{2}-\d{4}\s+\d{2}:\d{2}:\d{2}\s+GMT")
+SHAP_INPUTS = (
+    "air_temperature_c",
+    "mrt_minus_air_temperature_c",
+    "wind_speed_m_s",
+    "relative_humidity_percent",
+)
+SHAP_REFERENCE = {
+    "air_temperature_c": 20.0,
+    "mrt_minus_air_temperature_c": 0.0,
+    "wind_speed_m_s": 1.0,
+    "relative_humidity_percent": 50.0,
+}
 
 STRESS_CATEGORIES = (
     (38.0, "Very strong heat stress"),
@@ -147,6 +159,48 @@ def classify_thermal_stress(value: float | None) -> str | None:
     return "Extreme cold stress"
 
 
+def exact_shapley_values(
+    current_values: tuple[float, ...],
+    reference_values: tuple[float, ...],
+    predict: Callable[[tuple[float, ...]], float],
+) -> tuple[float, dict[str, float]]:
+    feature_count = len(SHAP_INPUTS)
+    if len(current_values) != feature_count or len(reference_values) != feature_count:
+        raise ValueError(f"SHAP calculations require exactly {feature_count} inputs.")
+
+    coalition_values: dict[int, float] = {}
+    for coalition in range(1 << feature_count):
+        values = tuple(
+            current_values[index]
+            if coalition & (1 << index)
+            else reference_values[index]
+            for index in range(feature_count)
+        )
+        prediction = predict(values)
+        if not math.isfinite(prediction):
+            raise ValueError("A model returned a non-finite value during SHAP calculation.")
+        coalition_values[coalition] = prediction
+
+    contributions: dict[str, float] = {}
+    for feature_index, feature_name in enumerate(SHAP_INPUTS):
+        contribution = 0.0
+        feature_bit = 1 << feature_index
+        for coalition in range(1 << feature_count):
+            if coalition & feature_bit:
+                continue
+            coalition_size = coalition.bit_count()
+            weight = 1.0 / (
+                feature_count * math.comb(feature_count - 1, coalition_size)
+            )
+            contribution += weight * (
+                coalition_values[coalition | feature_bit]
+                - coalition_values[coalition]
+            )
+        contributions[feature_name] = contribution
+
+    return coalition_values[0], contributions
+
+
 def calculate_record(
     observation: Observation,
     calculated_at: datetime | None = None,
@@ -168,32 +222,63 @@ def calculate_record(
         "wind_speed_m_s": observation.wind_speed_m_s,
         "relative_humidity_percent": observation.relative_humidity_percent,
     }
-    value = float(
-        model_function(
-            Ta=observation.air_temperature_c,
-            Tr=observation.air_temperature_c,
-            va=observation.wind_speed_m_s,
-            rH=observation.relative_humidity_percent,
-            oob="clamp",
-        )
+    current_shap_inputs = (
+        observation.air_temperature_c,
+        0.0,
+        observation.wind_speed_m_s,
+        observation.relative_humidity_percent,
     )
+    reference_shap_inputs = tuple(SHAP_REFERENCE[name] for name in SHAP_INPUTS)
+
+    def predict_neural(values: tuple[float, ...]) -> float:
+        air_temperature, mrt_difference, wind_speed, humidity = values
+        return float(
+            model_function(
+                Ta=air_temperature,
+                Tr=air_temperature + mrt_difference,
+                va=wind_speed,
+                rH=humidity,
+                oob="clamp",
+            )
+        )
+
+    neural_reference_value, neural_contributions = exact_shapley_values(
+        current_shap_inputs,
+        reference_shap_inputs,
+        predict_neural,
+    )
+    value = predict_neural(current_shap_inputs)
     if not math.isfinite(value):
         raise ValueError("Neural-UTCI returned a non-finite UTCI value.")
 
     polynomial_value: float | None = None
+    polynomial_explanation: dict[str, object] | None = None
     if 0.0 <= observation.relative_humidity_percent <= 100.0:
-        polynomial_result = polynomial_function(
-            tdb=observation.air_temperature_c,
-            tr=observation.air_temperature_c,
-            v=observation.wind_speed_m_s,
-            rh=observation.relative_humidity_percent,
-            units="SI",
-            limit_inputs=True,
-            round_output=False,
-        )
-        result_value = float(polynomial_result.utci)
+        def predict_polynomial(values: tuple[float, ...]) -> float:
+            air_temperature, mrt_difference, wind_speed, humidity = values
+            result = polynomial_function(
+                tdb=air_temperature,
+                tr=air_temperature + mrt_difference,
+                v=wind_speed,
+                rh=humidity,
+                units="SI",
+                limit_inputs=True,
+                round_output=False,
+            )
+            return float(result.utci)
+
+        result_value = predict_polynomial(current_shap_inputs)
         if math.isfinite(result_value):
             polynomial_value = round(result_value, 1)
+            polynomial_reference_value, polynomial_contributions = exact_shapley_values(
+                current_shap_inputs,
+                reference_shap_inputs,
+                predict_polynomial,
+            )
+            polynomial_explanation = {
+                "reference_utci_c": polynomial_reference_value,
+                "contributions_c": polynomial_contributions,
+            }
 
     return {
         "observed_at": observation.observed_at.isoformat(),
@@ -207,6 +292,14 @@ def calculate_record(
         ),
         "polynomial_stress_category": classify_thermal_stress(polynomial_value),
         "inputs": raw_inputs,
+        "shap": {
+            "reference_inputs": SHAP_REFERENCE,
+            "neural": {
+                "reference_utci_c": neural_reference_value,
+                "contributions_c": neural_contributions,
+            },
+            "polynomial": polynomial_explanation,
+        },
     }
 
 
@@ -236,7 +329,6 @@ def _write_data(path: Path, data: dict[str, object]) -> None:
 
 def update_data(
     path: Path,
-    force: bool = False,
     now: datetime | None = None,
     observation: Observation | None = None,
     model_function: Callable[..., float] | None = None,
@@ -244,10 +336,6 @@ def update_data(
 ) -> bool:
     run_at = now or datetime.now(timezone.utc)
     local_now = run_at.astimezone(LONDON)
-    if not force and local_now.hour != 12:
-        print(f"Skipping update: it is {local_now:%H:%M} in Oxford, not the noon hour.")
-        return False
-
     observation = observation or fetch_observation()
     record = calculate_record(
         observation,
@@ -281,14 +369,9 @@ def main() -> None:
     argument_parser = argparse.ArgumentParser(
         description="Fetch Oxford roof-station observations and calculate UTCI."
     )
-    argument_parser.add_argument(
-        "--force",
-        action="store_true",
-        help="Run now instead of waiting for the Oxford noon update window.",
-    )
-    arguments = argument_parser.parse_args()
+    argument_parser.parse_args()
     data_path = Path(__file__).resolve().parents[1] / "site" / "data" / "latest.json"
-    update_data(data_path, force=arguments.force)
+    update_data(data_path)
 
 
 if __name__ == "__main__":

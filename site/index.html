@@ -3,15 +3,19 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Oxford UTCI calculated with Neural-UTCI and pythermalcomfort using Physics roof station observations.">
-    <title>UTCI Oxford</title>
+    <meta name="description" content="How Oxford feels today, calculated with Neural-UTCI and the polynomial UTCI model using Physics roof station observations.">
+    <title>How does Oxford feel today?</title>
     <link rel="stylesheet" href="styles.css">
     <script src="app.js" defer></script>
   </head>
   <body>
     <main>
       <header>
-        <h1>UTCI Oxford</h1>
+        <h1>How does Oxford feel today?</h1>
+        <p class="intro">
+          Calculating feels-like temperature in Oxford using Neural-UTCI and
+          the old polynomial UTCI model.
+        </p>
       </header>
 
       <section aria-labelledby="latest-heading">
@@ -21,40 +25,40 @@
           <div class="results">
             <div class="result">
               <h3>Neural-UTCI</h3>
-              <p class="utci-value" id="neural-utci-value"></p>
+              <p class="model-description" id="neural-description"></p>
+              <div class="utci-explanation" id="neural-explanation">
+                <button class="utci-value" id="neural-utci-value" type="button"
+                  aria-expanded="false" aria-controls="neural-influences"
+                  aria-describedby="neural-influences"></button>
+                <div class="influence-popover" id="neural-influences"
+                  role="tooltip" aria-hidden="true">
+                  <h4>What is shaping this reading?</h4>
+                  <p class="influence-baseline" id="neural-shap-reference"></p>
+                  <ol class="influence-list" id="neural-shap-contributions"></ol>
+                </div>
+              </div>
               <p class="stress-category" id="neural-stress-category"></p>
+              <p class="stress-guidance" id="neural-stress-guidance"></p>
             </div>
             <div class="result">
               <h3>Polynomial-UTCI</h3>
-              <p class="utci-value" id="polynomial-utci-value"></p>
+              <p class="model-description" id="polynomial-description"></p>
+              <div class="utci-explanation" id="polynomial-explanation">
+                <button class="utci-value" id="polynomial-utci-value" type="button"
+                  aria-expanded="false" aria-controls="polynomial-influences"
+                  aria-describedby="polynomial-influences"></button>
+                <div class="influence-popover" id="polynomial-influences"
+                  role="tooltip" aria-hidden="true">
+                  <h4>What is shaping this reading?</h4>
+                  <p class="influence-baseline" id="polynomial-shap-reference"></p>
+                  <ol class="influence-list" id="polynomial-shap-contributions"></ol>
+                </div>
+              </div>
               <p class="stress-category" id="polynomial-stress-category"></p>
+              <p class="stress-guidance" id="polynomial-stress-guidance"></p>
               <p id="polynomial-status" class="muted"></p>
             </div>
           </div>
-          <h3>UTCI categories</h3>
-          <div class="table-wrap">
-            <table class="category-key">
-              <thead>
-                <tr>
-                  <th scope="col">Thermal-stress category</th>
-                  <th scope="col">UTCI range (°C)</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr><td><span class="stress-category extreme-heat">Extreme heat stress</span></td><td>&gt; +46</td></tr>
-                <tr><td><span class="stress-category very-strong-heat">Very strong heat stress</span></td><td>+38 to +46</td></tr>
-                <tr><td><span class="stress-category strong-heat">Strong heat stress</span></td><td>+32 to &lt; +38</td></tr>
-                <tr><td><span class="stress-category moderate-heat">Moderate heat stress</span></td><td>+26 to &lt; +32</td></tr>
-                <tr><td><span class="stress-category no-stress">No thermal stress</span></td><td>+9 to &lt; +26</td></tr>
-                <tr><td><span class="stress-category slight-cold">Slight cold stress</span></td><td>0 to &lt; +9</td></tr>
-                <tr><td><span class="stress-category moderate-cold">Moderate cold stress</span></td><td>−13 to &lt; 0</td></tr>
-                <tr><td><span class="stress-category strong-cold">Strong cold stress</span></td><td>−27 to &lt; −13</td></tr>
-                <tr><td><span class="stress-category very-strong-cold">Very strong cold stress</span></td><td>−40 to &lt; −27</td></tr>
-                <tr><td><span class="stress-category extreme-cold">Extreme cold stress</span></td><td>&lt; −40</td></tr>
-              </tbody>
-            </table>
-          </div>
-          <p id="calculation-time" class="muted"></p>
           <h3>Station readings</h3>
           <div class="table-wrap">
             <table>
@@ -65,20 +69,108 @@
             </table>
           </div>
           <aside aria-labelledby="mrt-heading">
-            <h3 id="mrt-heading">Mean radiant temperature (MRT) assumption</h3>
+            <h3 id="mrt-heading">Mean radiant temperature assumption</h3>
             <p>
-              The Physics roof station does not measure MRT, which is one of
+              The Physics roof station does not measure mean radiant temperature, which is one of
               the inputs needed to calculate UTCI. For both models, this page
-              assumes MRT equals the station's air temperature.
+              assumes mean radiant temperature equals the station's air temperature.
             </p>
           </aside>
+          <section aria-labelledby="categories-heading" class="category-section">
+            <h3 id="categories-heading">UTCI categories and guidance</h3>
+            <p>
+              These are general descriptions of possible responses and
+              precautions for each UTCI range. Individual risk varies; follow
+              local weather and health advice, especially during extreme
+              conditions.
+            </p>
+            <div class="table-wrap">
+              <table class="category-key guidance-table">
+                <thead>
+                  <tr>
+                    <th scope="col">Thermal-stress category</th>
+                    <th scope="col">UTCI range (°C)</th>
+                    <th scope="col">Possible physiological response</th>
+                    <th scope="col">General recommendation</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="stress-category extreme-heat">Extreme heat stress</span></td>
+                    <td>&gt; +46</td>
+                    <td>Overheating and serious heat illness may develop.</td>
+                    <td>Avoid outdoor activity; seek a cool indoor place, reduce exertion, and drink fluids.</td>
+                  </tr>
+                  <tr>
+                    <td><span class="stress-category very-strong-heat">Very strong heat stress</span></td>
+                    <td>+38 to +46</td>
+                    <td>Heavy sweating and rising body heat are possible.</td>
+                    <td>Limit activity, take regular breaks in shade or air conditioning, and drink fluids.</td>
+                  </tr>
+                  <tr>
+                    <td><span class="stress-category strong-heat">Strong heat stress</span></td>
+                    <td>+32 to &lt; +38</td>
+                    <td>Sweating and increasing body heat may occur during prolonged exposure.</td>
+                    <td>Reduce exertion, drink fluids, and use shaded, well-ventilated places.</td>
+                  </tr>
+                  <tr>
+                    <td><span class="stress-category moderate-heat">Moderate heat stress</span></td>
+                    <td>+26 to &lt; +32</td>
+                    <td>Warm skin and some sweating are possible.</td>
+                    <td>Keep water available and take breaks in shade if needed.</td>
+                  </tr>
+                  <tr>
+                    <td><span class="stress-category no-stress">No thermal stress</span></td>
+                    <td>+9 to &lt; +26</td>
+                    <td>Conditions are generally thermally comfortable.</td>
+                    <td>No special precautions indicated by this category.</td>
+                  </tr>
+                  <tr>
+                    <td><span class="stress-category slight-cold">Slight cold stress</span></td>
+                    <td>0 to &lt; +9</td>
+                    <td>Hands may begin to feel cold.</td>
+                    <td>Consider warm layers, gloves, and a hat for time outdoors.</td>
+                  </tr>
+                  <tr>
+                    <td><span class="stress-category moderate-cold">Moderate cold stress</span></td>
+                    <td>−13 to &lt; 0</td>
+                    <td>Chilling and discomfort of exposed skin may occur.</td>
+                    <td>Cover exposed skin, insulate hands and feet, and keep moving if comfortable.</td>
+                  </tr>
+                  <tr>
+                    <td><span class="stress-category strong-cold">Strong cold stress</span></td>
+                    <td>−27 to &lt; −13</td>
+                    <td>Chills and facial discomfort may progress to numbness with exposure.</td>
+                    <td>Cover the face and extremities, wear warm layers, and limit time outside.</td>
+                  </tr>
+                  <tr>
+                    <td><span class="stress-category very-strong-cold">Very strong cold stress</span></td>
+                    <td>−40 to &lt; −27</td>
+                    <td>Pain or numbness and frostbite risk increase in prolonged exposure.</td>
+                    <td>Stay sheltered where possible; if outside, cover skin and keep exposure brief.</td>
+                  </tr>
+                  <tr>
+                    <td><span class="stress-category extreme-cold">Extreme cold stress</span></td>
+                    <td>&lt; −40</td>
+                    <td>Frostbite and other serious cold injury can develop rapidly.</td>
+                    <td>Avoid going outside if possible and follow official cold-weather advice.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="citation">
+              Guidance adapted from Błażejczyk K. et al. (2010), “UTCI - a new
+              index for assessing human thermal loads,” <em>Przegląd
+              Geograficzny</em>, 82(1), 49–71.
+            </p>
+          </section>
         </div>
       </section>
 
       <footer>
         <p>
           Source: <a href="https://eodg.atm.ox.ac.uk/eodg/weather/weather.html">Oxford Physics roof weather station</a>.
-          UTCI is an estimate based on the stated inputs and MRT assumption.
+          UTCI is an estimate based on the stated inputs and mean radiant temperature assumption.
         </p>
       </footer>
     </main>

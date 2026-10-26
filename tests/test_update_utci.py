@@ -12,6 +12,7 @@ from update_utci import (  # noqa: E402
     Observation,
     calculate_record,
     classify_thermal_stress,
+    exact_shapley_values,
     parse_station_page,
     update_data,
 )
@@ -28,6 +29,31 @@ SAMPLE_PAGE = """
 
 
 class UpdateUTCITests(unittest.TestCase):
+    def test_exact_shapley_values_sum_to_prediction_difference(self) -> None:
+        reference = (0.0, 0.0, 0.0, 0.0)
+        current = (1.0, 1.0, 0.0, 0.0)
+
+        def predict(values: tuple[float, ...]) -> float:
+            first, second, _, _ = values
+            return 5.0 + 2.0 * first + 3.0 * second + first * second
+
+        reference_prediction, contributions = exact_shapley_values(
+            current,
+            reference,
+            predict,
+        )
+        self.assertEqual(reference_prediction, 5.0)
+        self.assertAlmostEqual(contributions["air_temperature_c"], 2.5)
+        self.assertAlmostEqual(
+            contributions["mrt_minus_air_temperature_c"],
+            3.5,
+        )
+        self.assertAlmostEqual(sum(contributions.values()), 6.0)
+
+    def test_shap_rejects_wrong_feature_count(self) -> None:
+        with self.assertRaisesRegex(ValueError, "exactly 4 inputs"):
+            exact_shapley_values((1.0,), (0.0,), lambda values: sum(values))
+
     def test_thermal_stress_categories_at_thresholds(self) -> None:
         cases = (
             (46.1, "Extreme heat stress"),
@@ -109,6 +135,21 @@ class UpdateUTCITests(unittest.TestCase):
         self.assertEqual(record["polynomial_status"], "calculated")
         self.assertEqual(record["polynomial_stress_category"], "Slight cold stress")
         self.assertEqual(record["inputs"]["wind_speed_m_s"], 0.0)
+        self.assertEqual(
+            record["shap"]["reference_inputs"]["air_temperature_c"],
+            20.0,
+        )
+        self.assertEqual(record["shap"]["neural"]["reference_utci_c"], 4.26)
+        self.assertEqual(
+            record["shap"]["polynomial"]["reference_utci_c"],
+            3.84,
+        )
+        self.assertTrue(
+            all(
+                abs(value) < 1e-12
+                for value in record["shap"]["neural"]["contributions_c"].values()
+            )
+        )
 
     def test_polynomial_result_is_unavailable_when_outside_its_input_range(self) -> None:
         observation = Observation(
@@ -191,14 +232,15 @@ class UpdateUTCITests(unittest.TestCase):
             path = Path(directory) / "latest.json"
             updated = update_data(
                 path,
-                force=True,
                 now=datetime(2026, 10, 22, 15, 0, tzinfo=timezone.utc),
                 observation=observation,
                 model_function=lambda **kwargs: 8.0,
                 polynomial_function=lambda **kwargs: SimpleNamespace(utci=7.5),
             )
             self.assertTrue(updated)
-            self.assertEqual(json.loads(path.read_text())["history"], [])
+            data = json.loads(path.read_text())
+            self.assertIsNotNone(data["current"])
+            self.assertEqual(data["history"], [])
 
 
 if __name__ == "__main__":
