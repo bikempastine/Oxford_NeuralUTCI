@@ -156,15 +156,6 @@ h4 {
   stroke-width: 1.5;
 }
 
-.person-arms,
-.person-legs,
-.jacket-seam,
-.shiver {
-  fill: none;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
 .person-body {
   fill: #5d91a5;
   stroke: #355f73;
@@ -172,9 +163,14 @@ h4 {
   stroke-linejoin: round;
 }
 
-.person-arms,
-.person-legs {
+.person-limbs,
+.jacket-seam,
+.shiver,
+.water-bottle > path {
+  fill: none;
   stroke: #355f73;
+  stroke-linecap: round;
+  stroke-linejoin: round;
   stroke-width: 4;
 }
 
@@ -183,7 +179,7 @@ h4 {
 .cold-hat,
 .shiver,
 .heat-sweat,
-.heat-sweat .sweat-drop {
+.water-bottle {
   display: none;
 }
 
@@ -208,16 +204,28 @@ h4 {
 }
 
 .shiver {
-  stroke: #3f7f99;
-  stroke-width: 2.8;
+  stroke: #588ca3;
+  stroke-width: 2;
 }
 
-.shiver path {
-  display: none;
-}
-
-.heat-sweat .sweat-drop {
+.heat-sweat path {
   fill: #5ba5c3;
+}
+
+.water-bottle > path:first-child {
+  fill: #fbfdfe;
+  stroke: #3e7891;
+  stroke-width: 1.8;
+}
+
+.water-bottle > path:nth-child(2) {
+  stroke: #3e7891;
+  stroke-width: 1.3;
+}
+
+.water-bottle .bottle-water {
+  fill: #8cc9db;
+  stroke: none;
 }
 
 .thermal-response.stress-slight-cold .cold-jacket,
@@ -238,23 +246,10 @@ h4 {
   display: initial;
 }
 
-.thermal-response.stress-strong-cold .shiver path:nth-child(1),
-.thermal-response.stress-very-strong-cold .shiver path:nth-child(-n + 2),
-.thermal-response.stress-extreme-cold .shiver path {
-  display: inline;
-}
-
 .thermal-response.stress-strong-cold .shiver,
 .thermal-response.stress-very-strong-cold .shiver,
 .thermal-response.stress-extreme-cold .shiver {
   display: initial;
-}
-
-.thermal-response.stress-moderate-heat .heat-sweat .sweat-drop:nth-child(1),
-.thermal-response.stress-strong-heat .heat-sweat .sweat-drop:nth-child(-n + 2),
-.thermal-response.stress-very-strong-heat .heat-sweat .sweat-drop:nth-child(-n + 3),
-.thermal-response.stress-extreme-heat .heat-sweat .sweat-drop {
-  display: inline;
 }
 
 .thermal-response.stress-moderate-heat .heat-sweat,
@@ -264,16 +259,24 @@ h4 {
   display: initial;
 }
 
-.thermal-response.stress-moderate-heat .person-arms,
-.thermal-response.stress-strong-heat .person-arms,
-.thermal-response.stress-very-strong-heat .person-arms,
-.thermal-response.stress-extreme-heat .person-arms,
-.thermal-response.stress-no-stress .person-arms {
-  display: none;
+.thermal-response.stress-moderate-heat .water-bottle,
+.thermal-response.stress-strong-heat .water-bottle,
+.thermal-response.stress-very-strong-heat .water-bottle,
+.thermal-response.stress-extreme-heat .water-bottle {
+  display: initial;
 }
 
 .thermal-response-copy {
   min-width: 0;
+}
+
+.thermal-response-label {
+  margin-bottom: 0.15rem;
+  color: #5d7886;
+  font-size: 0.67rem;
+  font-weight: 750;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
 .thermal-response-text {
@@ -361,6 +364,13 @@ h4 {
   font-family: Georgia, "Times New Roman", serif;
   font-size: 1.35rem;
   font-weight: 400;
+}
+
+.model-description {
+  min-height: 3.1em;
+  margin: 0 0 0.8rem;
+  color: #647f8d;
+  font-size: 0.84rem;
 }
 
 .model-citation {
@@ -935,6 +945,11 @@ a:focus-visible {
   .result h3 {
     height: 2.6em;
     font-size: 1.08rem;
+  }
+
+  .model-description {
+    min-height: 6.4rem;
+    font-size: 0.74rem;
   }
 
   .utci-value {

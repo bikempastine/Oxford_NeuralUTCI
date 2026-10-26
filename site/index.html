@@ -27,43 +27,45 @@
       </header>
 
       <section class="thermal-response" id="thermal-response" hidden
-        aria-label="Thermal response">
+        aria-labelledby="thermal-response-heading">
         <div class="thermal-response-illustration" id="thermal-response-illustration"
           aria-hidden="true">
           <svg viewBox="0 0 100 120" focusable="false">
-            <g class="person">
-              <circle class="person-head" cx="48" cy="20" r="11"></circle>
-              <path class="person-body"
-                d="M39 35 Q48 31 57 35 L64 68 L58 72 L57 55 L60 82 L36 82 L39 55 L37 72 L31 68 Z"></path>
-              <path class="person-arms" d="M41 44 L43 62 M55 44 L53 62"></path>
-              <path class="person-legs" d="M41 81 L37 111 M54 81 L59 111"></path>
-              <g class="cold-jacket">
-                <path d="M39 36 L48 42 L57 36 L66 43 L62 72 L34 72 L30 43 Z"></path>
-                <path class="jacket-seam" d="M48 42 L48 71 M39 51 L45 54 M57 51 L51 54"></path>
-              </g>
-              <g class="cold-scarf">
-                <path d="M38 34 Q48 40 58 34 L56 43 Q48 48 40 43 Z"></path>
-                <path d="M52 42 L56 58 L62 57 L59 42 Z"></path>
-              </g>
-              <g class="cold-hat">
-                <path d="M36 16 Q38 3 49 4 Q60 5 62 17 Z"></path>
-                <path d="M34 16 Q49 13 64 17 L63 21 Q49 19 35 21 Z"></path>
-              </g>
-              <g class="shiver">
-                <path d="M18 42 L12 48 L18 53 L12 59 L18 65 M78 42 L84 48 L78 53 L84 59 L78 65"></path>
-                <path d="M9 44 L4 49 L9 54 L4 59 L9 64 M87 44 L92 49 L87 54 L92 59 L87 64"></path>
-                <path d="M1 46 L-4 51 L1 56 L-4 61 L1 66 M95 46 L100 51 L95 56 L100 61 L95 66"></path>
-              </g>
-              <g class="heat-sweat">
-                <path class="sweat-drop" d="M68 24 C68 20 72 16 72 13 C76 18 78 21 76 25 A4 4 0 0 1 68 24 Z"></path>
-                <path class="sweat-drop" d="M80 31 C80 28 83 24 83 22 C87 27 88 29 86 32 A3 3 0 0 1 80 31 Z"></path>
-                <path class="sweat-drop" d="M66 39 C66 36 69 32 69 30 C73 35 74 37 72 40 A3 3 0 0 1 66 39 Z"></path>
-                <path class="sweat-drop" d="M82 45 C82 42 85 38 85 36 C89 41 90 43 88 46 A3 3 0 0 1 82 45 Z"></path>
-              </g>
+            <circle class="person-head" cx="48" cy="20" r="11"></circle>
+            <path class="person-body"
+              d="M39 35 Q48 31 57 35 L64 68 L58 72 L57 55 L60 82 L36 82 L39 55 L37 72 L31 68 Z"></path>
+            <path class="person-limbs"
+              d="M38 43 L25 65 M58 43 L70 62 M41 81 L37 111 M54 81 L59 111"></path>
+            <g class="cold-jacket">
+              <path d="M39 36 L48 42 L57 36 L66 43 L62 72 L34 72 L30 43 Z"></path>
+              <path class="jacket-seam" d="M48 42 L48 71 M39 51 L45 54 M57 51 L51 54"></path>
+            </g>
+            <g class="cold-scarf">
+              <path d="M38 34 Q48 40 58 34 L56 43 Q48 48 40 43 Z"></path>
+              <path d="M52 42 L56 58 L62 57 L59 42 Z"></path>
+            </g>
+            <g class="cold-hat">
+              <path d="M36 16 Q38 3 49 4 Q60 5 62 17 Z"></path>
+              <path d="M34 16 Q49 13 64 17 L63 21 Q49 19 35 21 Z"></path>
+            </g>
+            <g class="shiver">
+              <path d="M13 44 Q8 49 13 54 T13 64 M79 44 Q84 49 79 54 T79 64"></path>
+            </g>
+            <g class="heat-sweat">
+              <path d="M68 23 C68 19 72 15 72 12 C76 18 78 21 76 25 A4 4 0 0 1 68 23 Z"></path>
+              <path d="M79 34 C79 31 82 28 82 25 C86 30 87 33 85 36 A3 3 0 0 1 79 34 Z"></path>
+            </g>
+            <g class="water-bottle">
+              <path d="M76 73 L76 68 L84 68 L84 73 L87 76 L87 103 Q87 106 84 106 L76 106 Q73 106 73 103 L73 76 Z"></path>
+              <path d="M74 88 L86 88"></path>
+              <path class="bottle-water" d="M74 91 L86 91 L86 103 L74 103 Z"></path>
             </g>
           </svg>
         </div>
         <div class="thermal-response-copy">
+          <p class="thermal-response-label" id="thermal-response-heading">
+            Possible physiological response
+          </p>
           <p class="thermal-response-text" id="thermal-response-text"></p>
         </div>
         <span class="thermal-response-category" id="thermal-response-category"></span>
@@ -76,6 +78,7 @@
           <div class="results">
             <div class="result">
               <h3>Neural-UTCI</h3>
+              <p class="model-description" id="neural-description"></p>
               <div class="utci-explanation" id="neural-explanation">
                 <button class="utci-value" id="neural-utci-value" type="button"
                   aria-expanded="false" aria-controls="neural-influences"
@@ -92,6 +95,7 @@
             </div>
             <div class="result">
               <h3>Polynomial-UTCI</h3>
+              <p class="model-description" id="polynomial-description"></p>
               <div class="utci-explanation" id="polynomial-explanation">
                 <button class="utci-value" id="polynomial-utci-value" type="button"
                   aria-expanded="false" aria-controls="polynomial-influences"
