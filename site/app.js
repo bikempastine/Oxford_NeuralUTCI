@@ -92,6 +92,24 @@ function setStressGuidance(element, category) {
   }
 }
 
+function setThermalResponse(category) {
+  const response = document.getElementById("thermal-response");
+  const responseText = document.getElementById("thermal-response-text");
+  const responseCategory = document.getElementById("thermal-response-category");
+  const matchingRow = Array.from(
+    document.querySelectorAll(".guidance-table tbody tr"),
+  ).find((row) => row.cells[0].textContent.trim() === category);
+  const stressClass = categoryClass(category);
+
+  setResultCategory(response, category);
+  responseText.textContent = matchingRow
+    ? matchingRow.cells[2].textContent.trim()
+    : "";
+  responseCategory.className = `thermal-response-category stress-category ${stressClass}`;
+  responseCategory.textContent = category;
+  response.hidden = false;
+}
+
 function renderShap(modelName, explanation, record) {
   const referenceElement = document.getElementById(`${modelName}-shap-reference`);
   const body = document.getElementById(`${modelName}-shap-contributions`);
@@ -281,6 +299,7 @@ function renderCurrent(record) {
     document.getElementById("neural-stress-guidance"),
     neuralStress,
   );
+  setThermalResponse(neuralStress);
   renderShap("neural", record.shap?.neural, record);
 
   const polynomialValueElement = document.getElementById("polynomial-utci-value");

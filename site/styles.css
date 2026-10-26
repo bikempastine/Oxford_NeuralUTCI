@@ -85,10 +85,6 @@ h4 {
   font-size: 1rem;
 }
 
-.intro-mobile {
-  display: none;
-}
-
 #latest-heading {
   margin: 0 0 1rem;
 }
@@ -100,6 +96,199 @@ h4 {
 #current-calculation {
   overflow: visible;
   padding: 0;
+}
+
+.thermal-response {
+  display: grid;
+  grid-template-columns: 5.5rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.2rem;
+  padding: 0.75rem 1.2rem;
+  border: 1px solid #cbdfe8;
+  border-radius: 12px;
+  background: #f8fbfc;
+  color: #344f5d;
+  transition: background-color 180ms ease, border-color 180ms ease;
+}
+
+.thermal-response.stress-extreme-heat,
+.thermal-response.stress-very-strong-heat {
+  border-color: #e6b7a9;
+  background: #f7e6df;
+}
+
+.thermal-response.stress-strong-heat,
+.thermal-response.stress-moderate-heat {
+  border-color: #ead0b3;
+  background: #f8f0e5;
+}
+
+.thermal-response.stress-slight-cold,
+.thermal-response.stress-moderate-cold {
+  border-color: #b9d7e2;
+  background: #e6f2f6;
+}
+
+.thermal-response.stress-strong-cold,
+.thermal-response.stress-very-strong-cold,
+.thermal-response.stress-extreme-cold {
+  border-color: #c9c1d1;
+  background: #eeebf2;
+}
+
+.thermal-response-illustration {
+  display: grid;
+  width: 5.5rem;
+  height: 6.4rem;
+  place-items: center;
+}
+
+.thermal-response-illustration svg {
+  width: 5rem;
+  height: 6rem;
+  overflow: visible;
+}
+
+.person-head {
+  fill: #e7b995;
+  stroke: #805d4e;
+  stroke-width: 1.5;
+}
+
+.person-body {
+  fill: #5d91a5;
+  stroke: #355f73;
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+
+.person-limbs,
+.jacket-seam,
+.shiver,
+.water-bottle > path {
+  fill: none;
+  stroke: #355f73;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 4;
+}
+
+.cold-jacket,
+.cold-scarf,
+.cold-hat,
+.shiver,
+.heat-sweat,
+.water-bottle {
+  display: none;
+}
+
+.cold-jacket path:first-child {
+  fill: #456d83;
+  stroke: #294b60;
+  stroke-linejoin: round;
+  stroke-width: 1.5;
+}
+
+.cold-jacket .jacket-seam {
+  stroke: #dcebf0;
+  stroke-width: 1.2;
+}
+
+.cold-scarf path,
+.cold-hat path {
+  fill: #b45d52;
+  stroke: #79453f;
+  stroke-linejoin: round;
+  stroke-width: 1.4;
+}
+
+.shiver {
+  stroke: #588ca3;
+  stroke-width: 2;
+}
+
+.heat-sweat path {
+  fill: #5ba5c3;
+}
+
+.water-bottle > path:first-child {
+  fill: #fbfdfe;
+  stroke: #3e7891;
+  stroke-width: 1.8;
+}
+
+.water-bottle > path:nth-child(2) {
+  stroke: #3e7891;
+  stroke-width: 1.3;
+}
+
+.water-bottle .bottle-water {
+  fill: #8cc9db;
+  stroke: none;
+}
+
+.thermal-response.stress-slight-cold .cold-jacket,
+.thermal-response.stress-moderate-cold .cold-jacket,
+.thermal-response.stress-strong-cold .cold-jacket,
+.thermal-response.stress-very-strong-cold .cold-jacket,
+.thermal-response.stress-extreme-cold .cold-jacket {
+  display: initial;
+}
+
+.thermal-response.stress-moderate-cold .cold-scarf,
+.thermal-response.stress-strong-cold .cold-scarf,
+.thermal-response.stress-very-strong-cold .cold-scarf,
+.thermal-response.stress-extreme-cold .cold-scarf,
+.thermal-response.stress-strong-cold .cold-hat,
+.thermal-response.stress-very-strong-cold .cold-hat,
+.thermal-response.stress-extreme-cold .cold-hat {
+  display: initial;
+}
+
+.thermal-response.stress-strong-cold .shiver,
+.thermal-response.stress-very-strong-cold .shiver,
+.thermal-response.stress-extreme-cold .shiver {
+  display: initial;
+}
+
+.thermal-response.stress-moderate-heat .heat-sweat,
+.thermal-response.stress-strong-heat .heat-sweat,
+.thermal-response.stress-very-strong-heat .heat-sweat,
+.thermal-response.stress-extreme-heat .heat-sweat {
+  display: initial;
+}
+
+.thermal-response.stress-moderate-heat .water-bottle,
+.thermal-response.stress-strong-heat .water-bottle,
+.thermal-response.stress-very-strong-heat .water-bottle,
+.thermal-response.stress-extreme-heat .water-bottle {
+  display: initial;
+}
+
+.thermal-response-copy {
+  min-width: 0;
+}
+
+.thermal-response-label {
+  margin-bottom: 0.15rem;
+  color: #5d7886;
+  font-size: 0.67rem;
+  font-weight: 750;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.thermal-response-text {
+  margin-bottom: 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(0.95rem, 1.5vw, 1.18rem);
+  line-height: 1.4;
+}
+
+.thermal-response-category {
+  justify-self: end;
+  text-align: center;
 }
 
 .results {
@@ -719,12 +908,26 @@ a:focus-visible {
     padding-top: 1.2rem;
   }
 
-  .intro-desktop {
-    display: none;
+  .thermal-response {
+    grid-template-columns: 3.8rem minmax(0, 1fr);
+    gap: 0.7rem;
+    padding: 0.7rem 0.8rem;
   }
 
-  .intro-mobile {
-    display: block;
+  .thermal-response-illustration {
+    width: 3.8rem;
+    height: 5.3rem;
+  }
+
+  .thermal-response-illustration svg {
+    width: 3.7rem;
+    height: 4.8rem;
+  }
+
+  .thermal-response-category {
+    grid-column: 2;
+    justify-self: start;
+    margin-top: -0.35rem;
   }
 
   .results {
@@ -901,7 +1104,8 @@ a:focus-visible {
 
 @media (prefers-reduced-motion: reduce) {
   .influence-popover,
-  .result {
+  .result,
+  .thermal-response {
     transition: none;
   }
 }
