@@ -1,18 +1,44 @@
 {
   "current": {
-    "observed_at": "2026-10-25T12:56:12+00:00",
-    "calculated_at": "2026-10-25T13:00:54.333929+00:00",
-    "utci_c": -4.1,
-    "neural_utci_c": -4.1,
-    "neural_stress_category": "Moderate cold stress",
-    "polynomial_utci_c": -3.1,
+    "observed_at": "2026-10-26T12:06:10+00:00",
+    "calculated_at": "2026-10-26T12:10:38.904236+00:00",
+    "utci_c": 11.7,
+    "neural_utci_c": 11.7,
+    "neural_stress_category": "No thermal stress",
+    "polynomial_utci_c": 12.0,
     "polynomial_status": "calculated",
-    "polynomial_stress_category": "Moderate cold stress",
+    "polynomial_stress_category": "No thermal stress",
     "inputs": {
-      "air_temperature_c": 10.6,
-      "mean_radiant_temperature_c": 10.6,
-      "wind_speed_m_s": 6.5,
-      "relative_humidity_percent": 42.1
+      "air_temperature_c": 10.3,
+      "mean_radiant_temperature_c": 10.3,
+      "wind_speed_m_s": 0.6,
+      "relative_humidity_percent": 97.6
+    },
+    "shap": {
+      "reference_inputs": {
+        "air_temperature_c": 20.0,
+        "mrt_minus_air_temperature_c": 0.0,
+        "wind_speed_m_s": 1.0,
+        "relative_humidity_percent": 50.0
+      },
+      "neural": {
+        "reference_utci_c": 19.62071990966797,
+        "contributions_c": {
+          "air_temperature_c": -10.523063659667967,
+          "mrt_minus_air_temperature_c": 0.0,
+          "wind_speed_m_s": 0.30771636962890625,
+          "relative_humidity_percent": 2.299679756164551
+        }
+      },
+      "polynomial": {
+        "reference_utci_c": 19.401071137319907,
+        "contributions_c": {
+          "air_temperature_c": -9.903858148199664,
+          "mrt_minus_air_temperature_c": 0.0,
+          "wind_speed_m_s": 0.5818330434198897,
+          "relative_humidity_percent": 1.9219955774582822
+        }
+      }
     }
   },
   "history": [
@@ -32,7 +58,50 @@
         "relative_humidity_percent": 41.7
       },
       "date": "2026-10-25"
+    },
+    {
+      "observed_at": "2026-10-26T12:06:10+00:00",
+      "calculated_at": "2026-10-26T12:10:38.904236+00:00",
+      "utci_c": 11.7,
+      "neural_utci_c": 11.7,
+      "neural_stress_category": "No thermal stress",
+      "polynomial_utci_c": 12.0,
+      "polynomial_status": "calculated",
+      "polynomial_stress_category": "No thermal stress",
+      "inputs": {
+        "air_temperature_c": 10.3,
+        "mean_radiant_temperature_c": 10.3,
+        "wind_speed_m_s": 0.6,
+        "relative_humidity_percent": 97.6
+      },
+      "shap": {
+        "reference_inputs": {
+          "air_temperature_c": 20.0,
+          "mrt_minus_air_temperature_c": 0.0,
+          "wind_speed_m_s": 1.0,
+          "relative_humidity_percent": 50.0
+        },
+        "neural": {
+          "reference_utci_c": 19.62071990966797,
+          "contributions_c": {
+            "air_temperature_c": -10.523063659667967,
+            "mrt_minus_air_temperature_c": 0.0,
+            "wind_speed_m_s": 0.30771636962890625,
+            "relative_humidity_percent": 2.299679756164551
+          }
+        },
+        "polynomial": {
+          "reference_utci_c": 19.401071137319907,
+          "contributions_c": {
+            "air_temperature_c": -9.903858148199664,
+            "mrt_minus_air_temperature_c": 0.0,
+            "wind_speed_m_s": 0.5818330434198897,
+            "relative_humidity_percent": 1.9219955774582822
+          }
+        }
+      },
+      "date": "2026-10-26"
     }
   ],
-  "updated_at": "2026-10-25T13:00:54.333929+00:00"
+  "updated_at": "2026-10-26T12:10:38.904236+00:00"
 }
