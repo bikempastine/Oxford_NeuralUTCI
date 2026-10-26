@@ -1,18 +1,18 @@
 {
   "current": {
-    "observed_at": "2026-10-26T17:08:10+00:00",
-    "calculated_at": "2026-10-26T17:13:17.562005+00:00",
-    "utci_c": 12.9,
-    "neural_utci_c": 12.9,
+    "observed_at": "2026-10-26T17:27:08+00:00",
+    "calculated_at": "2026-10-26T17:31:37.853087+00:00",
+    "utci_c": 14.8,
+    "neural_utci_c": 14.8,
     "neural_stress_category": "No thermal stress",
-    "polynomial_utci_c": 12.4,
+    "polynomial_utci_c": 14.9,
     "polynomial_status": "calculated",
     "polynomial_stress_category": "No thermal stress",
     "inputs": {
       "air_temperature_c": 13.6,
       "mean_radiant_temperature_c": 13.6,
-      "wind_speed_m_s": 1.8,
-      "relative_humidity_percent": 83.6
+      "wind_speed_m_s": 0.5,
+      "relative_humidity_percent": 83.5
     },
     "shap": {
       "reference_inputs": {
@@ -22,21 +22,21 @@
         "relative_humidity_percent": 50.0
       },
       "neural": {
-        "reference_utci_c": 19.62071990966797,
+        "reference_utci_c": 19.620718002319336,
         "contributions_c": {
-          "air_temperature_c": -6.7645022074381504,
+          "air_temperature_c": -6.693568229675292,
           "mrt_minus_air_temperature_c": 0.0,
-          "wind_speed_m_s": -1.4339157740275066,
-          "relative_humidity_percent": 1.4620126088460286
+          "wind_speed_m_s": 0.3207583427429199,
+          "relative_humidity_percent": 1.5048842430114746
         }
       },
       "polynomial": {
         "reference_utci_c": 19.76884447123831,
         "contributions_c": {
-          "air_temperature_c": -6.903062298016572,
+          "air_temperature_c": -6.482661214023371,
           "mrt_minus_air_temperature_c": 0.0,
-          "wind_speed_m_s": -1.45824214508898,
-          "relative_humidity_percent": 0.9735720651425243
+          "wind_speed_m_s": 0.6747946664357716,
+          "relative_humidity_percent": 0.9816111830679783
         }
       }
     }
@@ -103,5 +103,5 @@
       "date": "2026-10-26"
     }
   ],
-  "updated_at": "2026-10-26T17:13:17.562005+00:00"
+  "updated_at": "2026-10-26T17:31:37.853087+00:00"
 }
