@@ -284,9 +284,6 @@ function renderCurrent(record) {
     thermalStressCategory(Number(neuralValue));
   const neuralValueElement = document.getElementById("neural-utci-value");
   const neuralResult = neuralValueElement.closest(".result");
-  const neuralDescription = document.getElementById("neural-description");
-  neuralDescription.textContent =
-    "A neural-network model that estimates UTCI from the station's weather readings.";
   neuralValueElement.textContent = `${Number(neuralValue).toFixed(1)} °C`;
   const neuralClass = categoryClass(neuralStress);
   neuralValueElement.className = `utci-value ${neuralClass}`;
@@ -305,8 +302,6 @@ function renderCurrent(record) {
   const polynomialValueElement = document.getElementById("polynomial-utci-value");
   const polynomialResult = polynomialValueElement.closest(".result");
   const polynomialCategoryElement = document.getElementById("polynomial-stress-category");
-  document.getElementById("polynomial-description").textContent =
-    "A degree-six regression trained to estimate UTCI offset from the station inputs.";
   if (hasPolynomialValue(record)) {
     const polynomialStress = record.polynomial_stress_category ??
       thermalStressCategory(Number(record.polynomial_utci_c));
