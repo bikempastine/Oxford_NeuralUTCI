@@ -1,18 +1,18 @@
 {
   "current": {
-    "observed_at": "2026-10-26T18:15:11+00:00",
-    "calculated_at": "2026-10-26T18:19:45.895385+00:00",
-    "utci_c": 14.5,
-    "neural_utci_c": 14.5,
+    "observed_at": "2026-10-26T18:51:07+00:00",
+    "calculated_at": "2026-10-26T18:55:49.535301+00:00",
+    "utci_c": 11.3,
+    "neural_utci_c": 11.3,
     "neural_stress_category": "No thermal stress",
-    "polynomial_utci_c": 14.2,
+    "polynomial_utci_c": 10.7,
     "polynomial_status": "calculated",
     "polynomial_stress_category": "No thermal stress",
     "inputs": {
-      "air_temperature_c": 13.7,
-      "mean_radiant_temperature_c": 13.7,
-      "wind_speed_m_s": 1.0,
-      "relative_humidity_percent": 83.4
+      "air_temperature_c": 13.4,
+      "mean_radiant_temperature_c": 13.4,
+      "wind_speed_m_s": 2.4,
+      "relative_humidity_percent": 84.8
     },
     "shap": {
       "reference_inputs": {
@@ -24,19 +24,19 @@
       "neural": {
         "reference_utci_c": 19.62071990966797,
         "contributions_c": {
-          "air_temperature_c": -6.591073513031005,
+          "air_temperature_c": -7.134016195933023,
           "mrt_minus_air_temperature_c": 0.0,
-          "wind_speed_m_s": 0.0,
-          "relative_humidity_percent": 1.4756102561950684
+          "wind_speed_m_s": -2.7229148546854653,
+          "relative_humidity_percent": 1.517914136250814
         }
       },
       "polynomial": {
         "reference_utci_c": 19.76884447123831,
         "contributions_c": {
-          "air_temperature_c": -6.541263451313899,
+          "air_temperature_c": -7.33441669481933,
           "mrt_minus_air_temperature_c": 0.0,
-          "wind_speed_m_s": 0.0,
-          "relative_humidity_percent": 0.9687274204386913
+          "wind_speed_m_s": -2.7265139514460195,
+          "relative_humidity_percent": 1.0417284246977787
         }
       }
     }
@@ -103,5 +103,5 @@
       "date": "2026-10-26"
     }
   ],
-  "updated_at": "2026-10-26T18:19:45.895385+00:00"
+  "updated_at": "2026-10-26T18:55:49.535301+00:00"
 }
