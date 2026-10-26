@@ -10,6 +10,7 @@ from current observations at the Physics roof station.
 - Only the station readings used in each calculation, plus the clearly
   identified mean radiant temperature assumption.
 - Short descriptions of the neural-network and polynomial UTCI methods.
+- A citation to the Neural-UTCI paper beneath that model's result.
 - A colour-coded thermal-stress category for each model result, following the
   temperature bands, symptoms, and general guidance shown in the category
   table on the page.
@@ -28,37 +29,47 @@ measured separately by this site.
 The updater reads the latest values and timestamp from the
 [Oxford Physics roof station's current-weather page](https://eodg.atm.ox.ac.uk/eodg/weather/weather.html).
 It calls `NeuralUTCI.utci` with air temperature, mean radiant temperature equal
-to air temperature, wind speed, relative humidity, and `oob="clamp"`. It also calls
-`pythermalcomfort.models.utci` with the same original station inputs, SI units,
-and the library's default valid-range checking. Both outputs are shown rounded
-to one decimal place. If an input is outside the polynomial model's valid
-range, the polynomial value is recorded as unavailable rather than being
-clamped; the Neural-UTCI result remains available using its own clamping rule.
-The colour-coded stress categories are assigned to the rounded UTCI values
-using the thresholds shown on the page.
+to air temperature, wind speed, relative humidity, and `oob="clamp"`. The
+Polynomial-UTCI estimate uses the degree-6 polynomial regression trained in
+the supplied SHAP notebook, not the `pythermalcomfort` package. The notebook
+fits a `StandardScaler`, `PolynomialFeatures(degree=6, include_bias=False)`,
+and `LinearRegression` to the `Offset` target; the updater adds air
+temperature to the predicted offset to obtain UTCI. The fitted parameters are
+stored in `site/data/polynomial_model.json`. Both outputs are shown rounded to
+one decimal place. Polynomial estimates are unavailable outside the training
+data's feature ranges; inputs are not clamped. Neural-UTCI retains its own
+clamping rule. Thermal-stress categories use the displayed rounded UTCI values
+and the thresholds shown on the page.
 The input influence summary uses exact Shapley attribution across the model's
 four inputs, with reference conditions of 20 °C air temperature, mean radiant
 temperature equal to air temperature, 1 m/s wind, and 50% relative humidity.
 Neural-UTCI and the polynomial model are evaluated independently for each
 reference/current input combination; each explanation's contributions sum to
-that model's change from its own reference prediction.
+that model's change from its own reference prediction. The polynomial
+explanation evaluates the trained polynomial regression itself for every
+coalition of inputs.
 The display shows air temperature, wind, and relative humidity, ranked by
 direction and relative magnitude; it does not display exact contribution
 values. These are model explanations, not causal effects.
-The polynomial implementation's validity limits include −50 to 50 °C air
-temperature, 0.5 to 17 m/s wind speed, and 0 to 100% relative humidity. Since
-mean radiant temperature is assumed equal to air temperature here, the
-radiant-temperature-to-air-temperature difference is zero.
+
+Neural-UTCI reference: [doi:10.48550/arXiv.2609.35949](https://doi.org/10.48550/arXiv.2609.35949).
 
 Neural-UTCI's documented input ranges are air temperature −50 to 50 °C, mean
 radiant temperature −80 to 120 °C, wind speed 0.5 to 30.3 m/s, and relative
 humidity 5 to 100%.
-When a value falls outside a model's valid range, Neural-UTCI clamps it while
-the polynomial returns no result. The website displays the station reading,
-not a separate table of adjusted model inputs. Wind speed is used as reported,
-with no adjustment to the model's documented 10 m reference. The station
-documents that its humidity sensor can briefly report 0% in saturated
+When an input falls outside the polynomial training ranges, that model returns
+no result. Neural-UTCI clamps inputs outside its own range. The website
+displays station readings, not adjusted model inputs. Wind speed is used as
+reported, with no adjustment to the model's documented 10 m reference. The
+station documents that its humidity sensor can briefly report 0% in saturated
 conditions.
+
+To regenerate the polynomial model from the supplied notebook's training
+dataset, run:
+
+```powershell
+python scripts\train_polynomial_model.py "C:\path\to\ESM_4_Table_Offset.Dat"
+```
 
 The station notes that its measurements are provided without a warranty and
 are intended for non-commercial use. Please cite the station and its current

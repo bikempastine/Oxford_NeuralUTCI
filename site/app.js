@@ -1,8 +1,15 @@
 const inputRows = [
-  ["Air temperature", "air_temperature_c", "°C"],
-  ["Relative humidity", "relative_humidity_percent", "%"],
-  ["Wind speed", "wind_speed_m_s", "m/s"],
+  ["Air temperature", "air_temperature_c", "°C", "temperature"],
+  ["Relative humidity", "relative_humidity_percent", "%", "humidity"],
+  ["Wind speed", "wind_speed_m_s", "m/s", "wind"],
 ];
+
+const measurementIcons = {
+  temperature: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M14 14.76V5a3 3 0 0 0-6 0v9.76a5 5 0 1 0 6 0Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M11 12V6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>',
+  humidity: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3.5S5.5 11 5.5 15.5a6.5 6.5 0 0 0 13 0C18.5 11 12 3.5 12 3.5Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 16a3 3 0 0 0 3 3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>',
+  wind: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 8h12a2.5 2.5 0 1 0-2.5-2.5M2 12h17a2.5 2.5 0 1 1-2.5 2.5M4 16h7a2 2 0 1 1-2 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  radiant: '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.7"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>',
+};
 
 const shapRows = [
   ["Air temperature", "air_temperature_c"],
@@ -196,10 +203,17 @@ function formatTimestamp(value) {
   }).format(date);
 }
 
-function addStationReading(container, label, value) {
+function addStationReading(container, label, value, iconName) {
   const item = document.createElement("div");
   item.className = "station-reading";
   item.setAttribute("role", "listitem");
+
+  const heading = document.createElement("div");
+  heading.className = "station-reading-heading";
+
+  const icon = document.createElement("span");
+  icon.className = "station-reading-icon";
+  icon.innerHTML = measurementIcons[iconName];
 
   const name = document.createElement("span");
   name.className = "station-reading-label";
@@ -209,7 +223,8 @@ function addStationReading(container, label, value) {
   reading.className = "station-reading-value";
   reading.textContent = value;
 
-  item.append(name, reading);
+  heading.append(icon, name);
+  item.append(heading, reading);
   container.append(item);
 }
 
@@ -240,7 +255,7 @@ function renderCurrent(record) {
   const polynomialResult = polynomialValueElement.closest(".result");
   const polynomialCategoryElement = document.getElementById("polynomial-stress-category");
   document.getElementById("polynomial-description").textContent =
-    "The traditional UTCI model, calculated using its established polynomial approximation.";
+    "A degree-six regression trained to estimate UTCI offset from the station inputs.";
   if (hasPolynomialValue(record)) {
     const polynomialStress = record.polynomial_stress_category ??
       thermalStressCategory(Number(record.polynomial_utci_c));
@@ -270,10 +285,15 @@ function renderCurrent(record) {
     `Oxford UTCI last updated ${formatTimestamp(record.observed_at)}.`;
 
   const body = document.getElementById("current-inputs");
-  for (const [label, key, unit] of inputRows) {
-    addStationReading(body, label, formatValue(record.inputs[key], unit));
+  for (const [label, key, unit, icon] of inputRows) {
+    addStationReading(body, label, formatValue(record.inputs[key], unit), icon);
   }
-  addStationReading(body, "Mean radiant temperature", "Not measured");
+  addStationReading(
+    body,
+    "Mean radiant temperature",
+    "Not measured",
+    "radiant",
+  );
 
   document.getElementById("current-calculation").hidden = false;
   document.getElementById("load-status").hidden = true;

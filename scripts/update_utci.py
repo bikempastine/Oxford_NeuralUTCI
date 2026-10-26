@@ -31,6 +31,9 @@ SHAP_REFERENCE = {
     "wind_speed_m_s": 1.0,
     "relative_humidity_percent": 50.0,
 }
+POLYNOMIAL_MODEL_PATH = (
+    Path(__file__).resolve().parents[1] / "site" / "data" / "polynomial_model.json"
+)
 
 STRESS_CATEGORIES = (
     (38.0, "Very strong heat stress"),
@@ -50,6 +53,80 @@ class Observation:
     air_temperature_c: float
     relative_humidity_percent: float
     wind_speed_m_s: float
+
+
+@dataclass(frozen=True)
+class PolynomialUTCIModel:
+    scaler_mean: tuple[float, ...]
+    scaler_scale: tuple[float, ...]
+    polynomial_powers: tuple[tuple[int, ...], ...]
+    coefficients: tuple[float, ...]
+    intercept: float
+    valid_ranges: tuple[tuple[float, float], ...]
+
+    @classmethod
+    def from_dict(cls, data: dict[str, object]) -> PolynomialUTCIModel:
+        if data.get("feature_names") != list(("Ta", "Tr-Ta", "va", "rH")):
+            raise ValueError("The trained polynomial UTCI model has unexpected inputs.")
+        if data.get("degree") != 6:
+            raise ValueError("The trained polynomial UTCI model must use degree six.")
+        mean = tuple(float(value) for value in data["scaler_mean"])
+        scale = tuple(float(value) for value in data["scaler_scale"])
+        powers = tuple(
+            tuple(int(power) for power in row)
+            for row in data["polynomial_powers"]
+        )
+        coefficients = tuple(float(value) for value in data["coefficients"])
+        ranges = tuple(
+            (float(row[0]), float(row[1]))
+            for row in data["valid_ranges"]
+        )
+        intercept = float(data["intercept"])
+        feature_count = len(SHAP_INPUTS)
+        if (
+            len(mean) != feature_count
+            or len(scale) != feature_count
+            or len(ranges) != feature_count
+            or not powers
+            or len(powers) != len(coefficients)
+            or any(len(row) != feature_count for row in powers)
+            or any(not math.isfinite(value) for value in (*mean, *scale, *coefficients, intercept))
+            or any(scale_value <= 0 for scale_value in scale)
+            or any(
+                not math.isfinite(bound) or low > high
+                for low, high in ranges
+                for bound in (low, high)
+            )
+        ):
+            raise ValueError("The trained polynomial UTCI model has invalid parameters.")
+        return cls(mean, scale, powers, coefficients, intercept, ranges)
+
+    @classmethod
+    def load(cls, path: Path = POLYNOMIAL_MODEL_PATH) -> PolynomialUTCIModel:
+        data = json.loads(path.read_text(encoding="utf-8"))
+        if not isinstance(data, dict):
+            raise ValueError(f"Unexpected polynomial model format in {path}.")
+        return cls.from_dict(data)
+
+    def accepts(self, values: tuple[float, ...]) -> bool:
+        return len(values) == len(self.valid_ranges) and all(
+            low <= value <= high
+            for value, (low, high) in zip(values, self.valid_ranges)
+        )
+
+    def predict_utci(self, values: tuple[float, ...]) -> float:
+        if len(values) != len(SHAP_INPUTS):
+            raise ValueError("Polynomial UTCI requires exactly four model inputs.")
+        scaled = tuple(
+            (value - mean) / scale
+            for value, mean, scale in zip(values, self.scaler_mean, self.scaler_scale)
+        )
+        offset = self.intercept + math.fsum(
+            coefficient
+            * math.prod(scaled[index] ** power for index, power in enumerate(powers))
+            for coefficient, powers in zip(self.coefficients, self.polynomial_powers)
+        )
+        return values[0] + offset
 
 
 class StationPageParser(HTMLParser):
@@ -205,16 +282,14 @@ def calculate_record(
     observation: Observation,
     calculated_at: datetime | None = None,
     model_function: Callable[..., float] | None = None,
-    polynomial_function: Callable[..., object] | None = None,
+    polynomial_function: Callable[[tuple[float, ...]], float] | None = None,
 ) -> dict[str, object]:
     if model_function is None:
         from NeuralUTCI import utci
 
         model_function = utci
-    if polynomial_function is None:
-        from pythermalcomfort.models import utci
-
-        polynomial_function = utci
+    polynomial_model = PolynomialUTCIModel.load()
+    predict_polynomial_model = polynomial_function or polynomial_model.predict_utci
 
     raw_inputs = {
         "air_temperature_c": observation.air_temperature_c,
@@ -253,27 +328,14 @@ def calculate_record(
 
     polynomial_value: float | None = None
     polynomial_explanation: dict[str, object] | None = None
-    if 0.0 <= observation.relative_humidity_percent <= 100.0:
-        def predict_polynomial(values: tuple[float, ...]) -> float:
-            air_temperature, mrt_difference, wind_speed, humidity = values
-            result = polynomial_function(
-                tdb=air_temperature,
-                tr=air_temperature + mrt_difference,
-                v=wind_speed,
-                rh=humidity,
-                units="SI",
-                limit_inputs=True,
-                round_output=False,
-            )
-            return float(result.utci)
-
-        result_value = predict_polynomial(current_shap_inputs)
+    if polynomial_model.accepts(current_shap_inputs):
+        result_value = predict_polynomial_model(current_shap_inputs)
         if math.isfinite(result_value):
             polynomial_value = round(result_value, 1)
             polynomial_reference_value, polynomial_contributions = exact_shapley_values(
                 current_shap_inputs,
                 reference_shap_inputs,
-                predict_polynomial,
+                predict_polynomial_model,
             )
             polynomial_explanation = {
                 "reference_utci_c": polynomial_reference_value,

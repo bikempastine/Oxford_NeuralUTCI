@@ -5,7 +5,7 @@
     "utci_c": 8.7,
     "neural_utci_c": 8.7,
     "neural_stress_category": "Slight cold stress",
-    "polynomial_utci_c": 8.4,
+    "polynomial_utci_c": 8.0,
     "polynomial_status": "calculated",
     "polynomial_stress_category": "Slight cold stress",
     "inputs": {
@@ -31,12 +31,12 @@
         }
       },
       "polynomial": {
-        "reference_utci_c": 19.401071137319907,
+        "reference_utci_c": 19.76884447123831,
         "contributions_c": {
-          "air_temperature_c": -7.091584715149384,
+          "air_temperature_c": -7.199582903166547,
           "mrt_minus_air_temperature_c": 0.0,
-          "wind_speed_m_s": -5.3704666210717615,
-          "relative_humidity_percent": 1.502066078189127
+          "wind_speed_m_s": -5.636932509959944,
+          "relative_humidity_percent": 1.0436027404209565
         }
       }
     }
@@ -48,7 +48,7 @@
       "utci_c": -3.4,
       "neural_utci_c": -3.4,
       "neural_stress_category": "Moderate cold stress",
-      "polynomial_utci_c": -2.4,
+      "polynomial_utci_c": -2.7,
       "polynomial_status": "calculated",
       "polynomial_stress_category": "Moderate cold stress",
       "inputs": {
@@ -65,7 +65,7 @@
       "utci_c": 11.2,
       "neural_utci_c": 11.2,
       "neural_stress_category": "No thermal stress",
-      "polynomial_utci_c": 11.0,
+      "polynomial_utci_c": 10.7,
       "polynomial_status": "calculated",
       "polynomial_stress_category": "No thermal stress",
       "inputs": {
@@ -91,12 +91,12 @@
           }
         },
         "polynomial": {
-          "reference_utci_c": 19.401071137319907,
+          "reference_utci_c": 19.76884447123831,
           "contributions_c": {
-            "air_temperature_c": -9.820546364571621,
+            "air_temperature_c": -10.275552631074813,
             "mrt_minus_air_temperature_c": 0.0,
-            "wind_speed_m_s": -0.5161794905596893,
-            "relative_humidity_percent": 1.9404613871705592
+            "wind_speed_m_s": -0.5536102956334116,
+            "relative_humidity_percent": 1.7124928633354062
           }
         }
       },

@@ -4,12 +4,12 @@ import tempfile
 import unittest
 from datetime import datetime, timezone
 from pathlib import Path
-from types import SimpleNamespace
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
 
 from update_utci import (  # noqa: E402
     Observation,
+    PolynomialUTCIModel,
     calculate_record,
     classify_thermal_stress,
     exact_shapley_values,
@@ -54,6 +54,47 @@ class UpdateUTCITests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "exactly 4 inputs"):
             exact_shapley_values((1.0,), (0.0,), lambda values: sum(values))
 
+    def test_notebook_polynomial_model_returns_utci_from_trained_offset(self) -> None:
+        model = PolynomialUTCIModel(
+            scaler_mean=(0.0, 0.0, 0.0, 0.0),
+            scaler_scale=(1.0, 1.0, 1.0, 1.0),
+            polynomial_powers=((0, 0, 0, 0), (1, 0, 0, 0), (0, 0, 1, 0)),
+            coefficients=(3.0, 2.0, 4.0),
+            intercept=1.0,
+            valid_ranges=((-50.0, 50.0), (-30.0, 70.0), (0.5, 17.0), (5.0, 100.0)),
+        )
+        values = (10.0, 0.0, 2.0, 50.0)
+        self.assertTrue(model.accepts(values))
+        self.assertEqual(model.predict_utci(values), 42.0)
+        self.assertFalse(model.accepts((10.0, 0.0, 0.1, 50.0)))
+
+    def test_trained_polynomial_shap_reconstructs_its_own_current_estimate(self) -> None:
+        observation = Observation(
+            observed_at=datetime(2026, 10, 26, 12, 21, tzinfo=timezone.utc),
+            air_temperature_c=10.7,
+            relative_humidity_percent=97.6,
+            wind_speed_m_s=1.3,
+        )
+        record = calculate_record(
+            observation,
+            model_function=lambda **kwargs: 12.0,
+        )
+        explanation = record["shap"]["polynomial"]
+        reconstructed = explanation["reference_utci_c"] + sum(
+            explanation["contributions_c"].values()
+        )
+        self.assertIsNotNone(record["polynomial_utci_c"])
+        self.assertAlmostEqual(
+            reconstructed,
+            record["polynomial_utci_c"],
+            delta=0.05,
+        )
+        self.assertAlmostEqual(
+            explanation["contributions_c"]["mrt_minus_air_temperature_c"],
+            0.0,
+            places=10,
+        )
+
     def test_thermal_stress_categories_at_thresholds(self) -> None:
         cases = (
             (46.1, "Extreme heat stress"),
@@ -93,8 +134,8 @@ class UpdateUTCITests(unittest.TestCase):
         observation = Observation(
             observed_at=datetime(2026, 10, 22, 21, 18, tzinfo=timezone.utc),
             air_temperature_c=9.4,
-            relative_humidity_percent=0.0,
-            wind_speed_m_s=0.0,
+            relative_humidity_percent=55.0,
+            wind_speed_m_s=2.7,
         )
         calls = {}
         polynomial_calls = {}
@@ -103,9 +144,9 @@ class UpdateUTCITests(unittest.TestCase):
             calls.update(kwargs)
             return 4.26
 
-        def fake_polynomial(**kwargs: object) -> SimpleNamespace:
-            polynomial_calls.update(kwargs)
-            return SimpleNamespace(utci=3.84)
+        def fake_polynomial(values: tuple[float, ...]) -> float:
+            polynomial_calls["inputs"] = values
+            return 3.84
 
         record = calculate_record(
             observation,
@@ -114,27 +155,16 @@ class UpdateUTCITests(unittest.TestCase):
         )
         self.assertEqual(
             calls,
-            {"Ta": 9.4, "Tr": 9.4, "va": 0.0, "rH": 0.0, "oob": "clamp"},
+            {"Ta": 9.4, "Tr": 9.4, "va": 2.7, "rH": 55.0, "oob": "clamp"},
         )
-        self.assertEqual(
-            polynomial_calls,
-            {
-                "tdb": 9.4,
-                "tr": 9.4,
-                "v": 0.0,
-                "rh": 0.0,
-                "units": "SI",
-                "limit_inputs": True,
-                "round_output": False,
-            },
-        )
+        self.assertEqual(polynomial_calls["inputs"], (9.4, 0.0, 2.7, 55.0))
         self.assertEqual(record["utci_c"], 4.3)
         self.assertEqual(record["neural_utci_c"], 4.3)
         self.assertEqual(record["neural_stress_category"], "Slight cold stress")
         self.assertEqual(record["polynomial_utci_c"], 3.8)
         self.assertEqual(record["polynomial_status"], "calculated")
         self.assertEqual(record["polynomial_stress_category"], "Slight cold stress")
-        self.assertEqual(record["inputs"]["wind_speed_m_s"], 0.0)
+        self.assertEqual(record["inputs"]["wind_speed_m_s"], 2.7)
         self.assertEqual(
             record["shap"]["reference_inputs"]["air_temperature_c"],
             20.0,
@@ -164,19 +194,11 @@ class UpdateUTCITests(unittest.TestCase):
         ) -> float:
             return 3.0 + Ta + 2.0 * Tr + 5.0 * va + 0.03 * rH + 0.1 * Ta * va
 
-        def polynomial_model(
-            *,
-            tdb: float,
-            tr: float,
-            v: float,
-            rh: float,
-            units: str,
-            limit_inputs: bool,
-            round_output: bool,
-        ) -> SimpleNamespace:
-            return SimpleNamespace(
-                utci=-2.0 + 0.8 * tdb + 0.25 * tr + 1.2 * v - 0.01 * rh
-                + 0.05 * tdb * rh
+        def polynomial_model(values: tuple[float, ...]) -> float:
+            ta, mrt_minus_ta, wind, humidity = values
+            return (
+                ta - 2.0 + 0.8 * ta + 0.25 * mrt_minus_ta
+                + 1.2 * wind - 0.01 * humidity + 0.05 * ta * humidity
             )
 
         record = calculate_record(
@@ -200,15 +222,7 @@ class UpdateUTCITests(unittest.TestCase):
                 rH=current[3],
                 oob="clamp",
             ),
-            "polynomial": polynomial_model(
-                tdb=current[0],
-                tr=current[0] + current[1],
-                v=current[2],
-                rh=current[3],
-                units="SI",
-                limit_inputs=True,
-                round_output=False,
-            ).utci,
+            "polynomial": polynomial_model(current),
         }
         for contribution_key in ("neural", "polynomial"):
             explanation = shap[contribution_key]
@@ -239,12 +253,12 @@ class UpdateUTCITests(unittest.TestCase):
             observed_at=datetime(2026, 10, 22, 21, 18, tzinfo=timezone.utc),
             air_temperature_c=9.4,
             relative_humidity_percent=84.0,
-            wind_speed_m_s=20.0,
+            wind_speed_m_s=31.0,
         )
         record = calculate_record(
             observation,
             model_function=lambda **kwargs: 18.0,
-            polynomial_function=lambda **kwargs: SimpleNamespace(utci=float("nan")),
+            polynomial_function=lambda values: 14.0,
         )
         self.assertIsNone(record["polynomial_utci_c"])
         self.assertEqual(record["polynomial_status"], "outside_model_range")
@@ -257,7 +271,7 @@ class UpdateUTCITests(unittest.TestCase):
             wind_speed_m_s=2.7,
         )
 
-        def unexpected_polynomial_call(**kwargs: object) -> SimpleNamespace:
+        def unexpected_polynomial_call(values: tuple[float, ...]) -> float:
             raise AssertionError("The polynomial should not receive invalid humidity.")
 
         record = calculate_record(
@@ -276,7 +290,7 @@ class UpdateUTCITests(unittest.TestCase):
             wind_speed_m_s=2.7,
         )
         fake_model = lambda **kwargs: 8.0
-        fake_polynomial = lambda **kwargs: SimpleNamespace(utci=7.5)
+        fake_polynomial = lambda values: 7.5
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "latest.json"
             for day in range(1, 10):
@@ -318,7 +332,7 @@ class UpdateUTCITests(unittest.TestCase):
                 now=datetime(2026, 10, 22, 15, 0, tzinfo=timezone.utc),
                 observation=observation,
                 model_function=lambda **kwargs: 8.0,
-                polynomial_function=lambda **kwargs: SimpleNamespace(utci=7.5),
+                polynomial_function=lambda values: 7.5,
             )
             self.assertTrue(updated)
             data = json.loads(path.read_text())
