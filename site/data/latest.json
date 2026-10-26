@@ -1,18 +1,18 @@
 {
   "current": {
-    "observed_at": "2026-10-26T18:51:07+00:00",
-    "calculated_at": "2026-10-26T18:55:49.535301+00:00",
-    "utci_c": 11.3,
-    "neural_utci_c": 11.3,
-    "neural_stress_category": "No thermal stress",
-    "polynomial_utci_c": 10.7,
+    "observed_at": "2026-10-26T22:52:04+00:00",
+    "calculated_at": "2026-10-26T22:56:46.194415+00:00",
+    "utci_c": 7.0,
+    "neural_utci_c": 7.0,
+    "neural_stress_category": "Slight cold stress",
+    "polynomial_utci_c": 6.7,
     "polynomial_status": "calculated",
-    "polynomial_stress_category": "No thermal stress",
+    "polynomial_stress_category": "Slight cold stress",
     "inputs": {
-      "air_temperature_c": 13.4,
-      "mean_radiant_temperature_c": 13.4,
-      "wind_speed_m_s": 2.4,
-      "relative_humidity_percent": 84.8
+      "air_temperature_c": 14.0,
+      "mean_radiant_temperature_c": 14.0,
+      "wind_speed_m_s": 4.4,
+      "relative_humidity_percent": 82.2
     },
     "shap": {
       "reference_inputs": {
@@ -24,19 +24,19 @@
       "neural": {
         "reference_utci_c": 19.62071990966797,
         "contributions_c": {
-          "air_temperature_c": -7.134016195933023,
+          "air_temperature_c": -7.264297803243001,
           "mrt_minus_air_temperature_c": 0.0,
-          "wind_speed_m_s": -2.7229148546854653,
-          "relative_humidity_percent": 1.517914136250814
+          "wind_speed_m_s": -6.7498782475789385,
+          "relative_humidity_percent": 1.4116961161295571
         }
       },
       "polynomial": {
         "reference_utci_c": 19.76884447123831,
         "contributions_c": {
-          "air_temperature_c": -7.33441669481933,
+          "air_temperature_c": -7.192245888442239,
           "mrt_minus_air_temperature_c": 0.0,
-          "wind_speed_m_s": -2.7265139514460195,
-          "relative_humidity_percent": 1.0417284246977787
+          "wind_speed_m_s": -6.777861902541288,
+          "relative_humidity_percent": 0.8807248701569065
         }
       }
     }
@@ -103,5 +103,5 @@
       "date": "2026-10-26"
     }
   ],
-  "updated_at": "2026-10-26T18:55:49.535301+00:00"
+  "updated_at": "2026-10-26T22:56:46.194415+00:00"
 }
