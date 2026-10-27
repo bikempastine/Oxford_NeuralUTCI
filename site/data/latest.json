@@ -1,18 +1,18 @@
 {
   "current": {
-    "observed_at": "2026-10-27T12:30:12+00:00",
-    "calculated_at": "2026-10-27T12:34:57.372736+00:00",
-    "utci_c": 10.8,
-    "neural_utci_c": 10.8,
+    "observed_at": "2026-10-27T12:45:09+00:00",
+    "calculated_at": "2026-10-27T12:50:15.380661+00:00",
+    "utci_c": 9.5,
+    "neural_utci_c": 9.5,
     "neural_stress_category": "No thermal stress",
-    "polynomial_utci_c": 10.5,
+    "polynomial_utci_c": 9.3,
     "polynomial_status": "calculated",
     "polynomial_stress_category": "No thermal stress",
     "inputs": {
-      "air_temperature_c": 12.1,
-      "mean_radiant_temperature_c": 12.1,
-      "wind_speed_m_s": 1.6,
-      "relative_humidity_percent": 52.9
+      "air_temperature_c": 11.9,
+      "mean_radiant_temperature_c": 11.9,
+      "wind_speed_m_s": 2.0,
+      "relative_humidity_percent": 56.1
     },
     "shap": {
       "reference_inputs": {
@@ -24,19 +24,19 @@
       "neural": {
         "reference_utci_c": 19.62071990966797,
         "contributions_c": {
-          "air_temperature_c": -7.962401390075684,
+          "air_temperature_c": -8.37215280532837,
           "mrt_minus_air_temperature_c": 0.0,
-          "wind_speed_m_s": -0.9939007759094238,
-          "relative_humidity_percent": 0.12894964218139648
+          "wind_speed_m_s": -1.99473237991333,
+          "relative_humidity_percent": 0.26212596893310547
         }
       },
       "polynomial": {
         "reference_utci_c": 19.76884447123831,
         "contributions_c": {
-          "air_temperature_c": -8.3088195998259,
+          "air_temperature_c": -8.662325268592607,
           "mrt_minus_air_temperature_c": 0.0,
-          "wind_speed_m_s": -1.1038033891485766,
-          "relative_humidity_percent": 0.097738351690559
+          "wind_speed_m_s": -1.9467728700044382,
+          "relative_humidity_percent": 0.18795823857124044
         }
       }
     }
@@ -103,19 +103,19 @@
       "date": "2026-10-26"
     },
     {
-      "observed_at": "2026-10-27T12:30:12+00:00",
-      "calculated_at": "2026-10-27T12:34:57.372736+00:00",
-      "utci_c": 10.8,
-      "neural_utci_c": 10.8,
+      "observed_at": "2026-10-27T12:45:09+00:00",
+      "calculated_at": "2026-10-27T12:50:15.380661+00:00",
+      "utci_c": 9.5,
+      "neural_utci_c": 9.5,
       "neural_stress_category": "No thermal stress",
-      "polynomial_utci_c": 10.5,
+      "polynomial_utci_c": 9.3,
       "polynomial_status": "calculated",
       "polynomial_stress_category": "No thermal stress",
       "inputs": {
-        "air_temperature_c": 12.1,
-        "mean_radiant_temperature_c": 12.1,
-        "wind_speed_m_s": 1.6,
-        "relative_humidity_percent": 52.9
+        "air_temperature_c": 11.9,
+        "mean_radiant_temperature_c": 11.9,
+        "wind_speed_m_s": 2.0,
+        "relative_humidity_percent": 56.1
       },
       "shap": {
         "reference_inputs": {
@@ -127,24 +127,24 @@
         "neural": {
           "reference_utci_c": 19.62071990966797,
           "contributions_c": {
-            "air_temperature_c": -7.962401390075684,
+            "air_temperature_c": -8.37215280532837,
             "mrt_minus_air_temperature_c": 0.0,
-            "wind_speed_m_s": -0.9939007759094238,
-            "relative_humidity_percent": 0.12894964218139648
+            "wind_speed_m_s": -1.99473237991333,
+            "relative_humidity_percent": 0.26212596893310547
           }
         },
         "polynomial": {
           "reference_utci_c": 19.76884447123831,
           "contributions_c": {
-            "air_temperature_c": -8.3088195998259,
+            "air_temperature_c": -8.662325268592607,
             "mrt_minus_air_temperature_c": 0.0,
-            "wind_speed_m_s": -1.1038033891485766,
-            "relative_humidity_percent": 0.097738351690559
+            "wind_speed_m_s": -1.9467728700044382,
+            "relative_humidity_percent": 0.18795823857124044
           }
         }
       },
       "date": "2026-10-27"
     }
   ],
-  "updated_at": "2026-10-27T12:34:57.372736+00:00"
+  "updated_at": "2026-10-27T12:50:15.380661+00:00"
 }
