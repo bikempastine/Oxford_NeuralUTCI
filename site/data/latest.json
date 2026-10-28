@@ -1,18 +1,18 @@
 {
   "current": {
-    "observed_at": "2026-10-28T01:48:06+00:00",
-    "calculated_at": "2026-10-28T01:52:53.800149+00:00",
-    "utci_c": 6.0,
-    "neural_utci_c": 6.0,
+    "observed_at": "2026-10-28T07:33:11+00:00",
+    "calculated_at": "2026-10-28T07:38:35.123109+00:00",
+    "utci_c": 7.2,
+    "neural_utci_c": 7.2,
     "neural_stress_category": "Slight cold stress",
-    "polynomial_utci_c": null,
-    "polynomial_status": "outside_model_range",
-    "polynomial_stress_category": null,
+    "polynomial_utci_c": 7.3,
+    "polynomial_status": "calculated",
+    "polynomial_stress_category": "Slight cold stress",
     "inputs": {
-      "air_temperature_c": 5.2,
-      "mean_radiant_temperature_c": 5.2,
-      "wind_speed_m_s": 0.0,
-      "relative_humidity_percent": 87.3
+      "air_temperature_c": 7.5,
+      "mean_radiant_temperature_c": 7.5,
+      "wind_speed_m_s": 1.2,
+      "relative_humidity_percent": 77.4
     },
     "shap": {
       "reference_inputs": {
@@ -24,13 +24,21 @@
       "neural": {
         "reference_utci_c": 19.62071990966797,
         "contributions_c": {
-          "air_temperature_c": -15.592462539672852,
+          "air_temperature_c": -13.123095115025837,
           "mrt_minus_air_temperature_c": 0.0,
-          "wind_speed_m_s": 0.4966063499450683,
-          "relative_humidity_percent": 1.4903469085693357
+          "wind_speed_m_s": -0.37397487958272296,
+          "relative_humidity_percent": 1.0461246172587075
         }
       },
-      "polynomial": null
+      "polynomial": {
+        "reference_utci_c": 19.76884447123831,
+        "contributions_c": {
+          "air_temperature_c": -12.851235183996652,
+          "mrt_minus_air_temperature_c": 0.0,
+          "wind_speed_m_s": -0.39000617979174523,
+          "relative_humidity_percent": 0.8223746215400375
+        }
+      }
     }
   },
   "history": [
@@ -138,5 +146,5 @@
       "date": "2026-10-27"
     }
   ],
-  "updated_at": "2026-10-28T01:52:53.800149+00:00"
+  "updated_at": "2026-10-28T07:38:35.123109+00:00"
 }
