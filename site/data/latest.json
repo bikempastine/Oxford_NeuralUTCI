@@ -1,18 +1,18 @@
 {
   "current": {
-    "observed_at": "2026-11-02T18:50:04+00:00",
-    "calculated_at": "2026-11-02T18:55:12.715416+00:00",
-    "utci_c": 7.4,
-    "neural_utci_c": 7.4,
+    "observed_at": "2026-11-03T01:19:09+00:00",
+    "calculated_at": "2026-11-03T01:24:30.057949+00:00",
+    "utci_c": 1.1,
+    "neural_utci_c": 1.1,
     "neural_stress_category": "Slight cold stress",
-    "polynomial_utci_c": null,
-    "polynomial_status": "outside_model_range",
-    "polynomial_stress_category": null,
+    "polynomial_utci_c": 1.6,
+    "polynomial_status": "calculated",
+    "polynomial_stress_category": "Slight cold stress",
     "inputs": {
-      "air_temperature_c": 6.8,
-      "mean_radiant_temperature_c": 6.8,
-      "wind_speed_m_s": 0.1,
-      "relative_humidity_percent": 70.2
+      "air_temperature_c": 4.8,
+      "mean_radiant_temperature_c": 4.8,
+      "wind_speed_m_s": 2.2,
+      "relative_humidity_percent": 83.7
     },
     "shap": {
       "reference_inputs": {
@@ -24,13 +24,21 @@
       "neural": {
         "reference_utci_c": 19.62071990966797,
         "contributions_c": {
-          "air_temperature_c": -13.520085811614988,
+          "air_temperature_c": -16.875556707382202,
           "mrt_minus_air_temperature_c": 0.0,
-          "wind_speed_m_s": 0.49684405326843256,
-          "relative_humidity_percent": 0.7697288990020751
+          "wind_speed_m_s": -2.93121600151062,
+          "relative_humidity_percent": 1.2513821125030518
         }
       },
-      "polynomial": null
+      "polynomial": {
+        "reference_utci_c": 19.76884447123831,
+        "contributions_c": {
+          "air_temperature_c": -16.503886846283997,
+          "mrt_minus_air_temperature_c": 0.0,
+          "wind_speed_m_s": -2.791038546687301,
+          "relative_humidity_percent": 1.173847634590003
+        }
+      }
     }
   },
   "history": [
@@ -138,5 +146,5 @@
       "date": "2026-10-27"
     }
   ],
-  "updated_at": "2026-11-02T18:55:12.715416+00:00"
+  "updated_at": "2026-11-03T01:24:30.057949+00:00"
 }
