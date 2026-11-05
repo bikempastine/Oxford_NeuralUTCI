@@ -1,18 +1,18 @@
 {
   "current": {
-    "observed_at": "2026-11-04T18:13:05+00:00",
-    "calculated_at": "2026-11-04T18:18:15.727527+00:00",
-    "utci_c": 5.5,
-    "neural_utci_c": 5.5,
+    "observed_at": "2026-11-04T23:56:07+00:00",
+    "calculated_at": "2026-11-05T00:00:43.358396+00:00",
+    "utci_c": 6.8,
+    "neural_utci_c": 6.8,
     "neural_stress_category": "Slight cold stress",
-    "polynomial_utci_c": 5.7,
-    "polynomial_status": "calculated",
-    "polynomial_stress_category": "Slight cold stress",
+    "polynomial_utci_c": null,
+    "polynomial_status": "outside_model_range",
+    "polynomial_stress_category": null,
     "inputs": {
-      "air_temperature_c": 7.3,
-      "mean_radiant_temperature_c": 7.3,
-      "wind_speed_m_s": 1.6,
-      "relative_humidity_percent": 66.9
+      "air_temperature_c": 6.2,
+      "mean_radiant_temperature_c": 6.2,
+      "wind_speed_m_s": 0.0,
+      "relative_humidity_percent": 74.0
     },
     "shap": {
       "reference_inputs": {
@@ -22,23 +22,15 @@
         "relative_humidity_percent": 50.0
       },
       "neural": {
-        "reference_utci_c": 19.620718002319336,
+        "reference_utci_c": 19.62071990966797,
         "contributions_c": {
-          "air_temperature_c": -13.447336196899414,
+          "air_temperature_c": -14.238069772720335,
           "mrt_minus_air_temperature_c": 0.0,
-          "wind_speed_m_s": -1.314958095550537,
-          "relative_humidity_percent": 0.6262278556823729
+          "wind_speed_m_s": 0.48960208892822266,
+          "relative_humidity_percent": 0.896716833114624
         }
       },
-      "polynomial": {
-        "reference_utci_c": 19.76884447123831,
-        "contributions_c": {
-          "air_temperature_c": -13.313048261583848,
-          "mrt_minus_air_temperature_c": 0.0,
-          "wind_speed_m_s": -1.248236189799291,
-          "relative_humidity_percent": 0.4745390337592828
-        }
-      }
+      "polynomial": null
     }
   },
   "history": [
@@ -146,5 +138,5 @@
       "date": "2026-10-27"
     }
   ],
-  "updated_at": "2026-11-04T18:18:15.727527+00:00"
+  "updated_at": "2026-11-05T00:00:43.358396+00:00"
 }
