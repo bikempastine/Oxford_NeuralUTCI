@@ -263,6 +263,37 @@ class UpdateUTCITests(unittest.TestCase):
         self.assertIsNone(record["polynomial_utci_c"])
         self.assertEqual(record["polynomial_status"], "outside_model_range")
 
+    def test_calm_wind_uses_polynomial_training_minimum_and_reports_adjustment(self) -> None:
+        observation = Observation(
+            observed_at=datetime(2026, 11, 10, 13, 44, tzinfo=timezone.utc),
+            air_temperature_c=6.5,
+            relative_humidity_percent=78.0,
+            wind_speed_m_s=0.0,
+        )
+        polynomial_calls: list[tuple[float, ...]] = []
+
+        def fake_polynomial(values: tuple[float, ...]) -> float:
+            polynomial_calls.append(values)
+            return values[0] + 2.0 * values[2]
+
+        record = calculate_record(
+            observation,
+            model_function=lambda **kwargs: 7.2,
+            polynomial_function=fake_polynomial,
+        )
+
+        self.assertEqual(polynomial_calls[0], (6.5, 0.0, 0.5, 78.0))
+        self.assertEqual(record["inputs"]["wind_speed_m_s"], 0.0)
+        self.assertEqual(record["polynomial_wind_speed_m_s"], 0.5)
+        self.assertEqual(record["polynomial_utci_c"], 7.5)
+        self.assertEqual(record["polynomial_status"], "calculated_with_wind_floor")
+        explanation = record["shap"]["polynomial"]
+        self.assertAlmostEqual(
+            explanation["reference_utci_c"]
+            + sum(explanation["contributions_c"].values()),
+            7.5,
+        )
+
     def test_polynomial_is_not_called_for_invalid_humidity(self) -> None:
         observation = Observation(
             observed_at=datetime(2026, 10, 22, 21, 18, tzinfo=timezone.utc),

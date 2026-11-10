@@ -328,10 +328,18 @@ function renderCurrent(record) {
     document.getElementById("polynomial-stress-guidance").textContent = "";
   }
   renderShap("polynomial", record.shap?.polynomial, record);
-  document.getElementById("polynomial-status").textContent =
-    record.polynomial_status === "outside_model_range"
-      ? "An input is outside the polynomial model's valid range."
-      : "";
+  const polynomialStatus = document.getElementById("polynomial-status");
+  if (record.polynomial_status === "calculated_with_wind_floor") {
+    polynomialStatus.textContent =
+      `Station wind is ${formatValue(record.inputs.wind_speed_m_s, "m/s")}; ` +
+      `the polynomial uses its trained minimum of ` +
+      `${formatValue(record.polynomial_wind_speed_m_s, "m/s")}.`;
+  } else {
+    polynomialStatus.textContent =
+      record.polynomial_status === "outside_model_range"
+        ? "An input is outside the polynomial model's valid range."
+        : "";
+  }
   document.getElementById("latest-heading").textContent =
     `Oxford UTCI last updated ${formatTimestamp(record.observed_at)}.`;
 

@@ -303,6 +303,17 @@ def calculate_record(
         observation.wind_speed_m_s,
         observation.relative_humidity_percent,
     )
+    polynomial_inputs = current_shap_inputs
+    minimum_polynomial_wind = polynomial_model.valid_ranges[2][0]
+    wind_floor_applied = (
+        0.0 <= observation.wind_speed_m_s < minimum_polynomial_wind
+    )
+    if wind_floor_applied:
+        polynomial_inputs = (
+            *current_shap_inputs[:2],
+            minimum_polynomial_wind,
+            *current_shap_inputs[3:],
+        )
     reference_shap_inputs = tuple(SHAP_REFERENCE[name] for name in SHAP_INPUTS)
 
     def predict_neural(values: tuple[float, ...]) -> float:
@@ -328,12 +339,12 @@ def calculate_record(
 
     polynomial_value: float | None = None
     polynomial_explanation: dict[str, object] | None = None
-    if polynomial_model.accepts(current_shap_inputs):
-        result_value = predict_polynomial_model(current_shap_inputs)
+    if polynomial_model.accepts(polynomial_inputs):
+        result_value = predict_polynomial_model(polynomial_inputs)
         if math.isfinite(result_value):
             polynomial_value = round(result_value, 1)
             polynomial_reference_value, polynomial_contributions = exact_shapley_values(
-                current_shap_inputs,
+                polynomial_inputs,
                 reference_shap_inputs,
                 predict_polynomial_model,
             )
@@ -350,7 +361,14 @@ def calculate_record(
         "neural_stress_category": classify_thermal_stress(round(value, 1)),
         "polynomial_utci_c": polynomial_value,
         "polynomial_status": (
-            "calculated" if polynomial_value is not None else "outside_model_range"
+            "outside_model_range"
+            if polynomial_value is None
+            else "calculated_with_wind_floor"
+            if wind_floor_applied
+            else "calculated"
+        ),
+        "polynomial_wind_speed_m_s": (
+            polynomial_inputs[2] if polynomial_value is not None else None
         ),
         "polynomial_stress_category": classify_thermal_stress(polynomial_value),
         "inputs": raw_inputs,

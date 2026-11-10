@@ -37,9 +37,11 @@ and `LinearRegression` to the `Offset` target; the updater adds air
 temperature to the predicted offset to obtain UTCI. The fitted parameters are
 stored in `site/data/polynomial_model.json`. Both outputs are shown rounded to
 one decimal place. Polynomial estimates are unavailable outside the training
-data's feature ranges; inputs are not clamped. Neural-UTCI retains its own
-clamping rule. Thermal-stress categories use the displayed rounded UTCI values
-and the thresholds shown on the page.
+data's feature ranges, except calm wind readings from 0 to below 0.5 m/s, which
+use the model's 0.5 m/s training minimum. The station reading remains
+unchanged, and the page labels this polynomial adjustment. Neural-UTCI retains
+its own clamping rule. Thermal-stress categories use the displayed rounded
+UTCI values and the thresholds shown on the page.
 The input influence summary uses exact Shapley attribution across the model's
 four inputs, with reference conditions of 20 °C air temperature, mean radiant
 temperature equal to air temperature, 1 m/s wind, and 50% relative humidity.
@@ -58,11 +60,11 @@ Neural-UTCI's documented input ranges are air temperature −50 to 50 °C, mean
 radiant temperature −80 to 120 °C, wind speed 0.5 to 30.3 m/s, and relative
 humidity 5 to 100%.
 When an input falls outside the polynomial training ranges, that model returns
-no result. Neural-UTCI clamps inputs outside its own range. The website
-displays station readings, not adjusted model inputs. Wind speed is used as
-reported, with no adjustment to the model's documented 10 m reference. The
-station documents that its humidity sensor can briefly report 0% in saturated
-conditions.
+no result, apart from the calm-wind adjustment described above. Neural-UTCI
+clamps inputs outside its own range. The website displays station readings,
+not adjusted model inputs. Wind speed is used as reported, with no adjustment
+to the model's documented 10 m reference. The station documents that its
+humidity sensor can briefly report 0% in saturated conditions.
 
 To regenerate the polynomial model from the supplied notebook's training
 dataset, run:
