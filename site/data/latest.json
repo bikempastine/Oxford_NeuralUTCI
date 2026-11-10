@@ -1,7 +1,7 @@
 {
   "current": {
-    "observed_at": "2026-11-10T13:41:01+00:00",
-    "calculated_at": "2026-11-10T13:45:52.288831+00:00",
+    "observed_at": "2026-11-10T13:44:11+00:00",
+    "calculated_at": "2026-11-10T13:48:51.063752+00:00",
     "utci_c": 7.2,
     "neural_utci_c": 7.2,
     "neural_stress_category": "Slight cold stress",
@@ -12,7 +12,7 @@
       "air_temperature_c": 6.5,
       "mean_radiant_temperature_c": 6.5,
       "wind_speed_m_s": 0.0,
-      "relative_humidity_percent": 77.1
+      "relative_humidity_percent": 78.0
     },
     "shap": {
       "reference_inputs": {
@@ -24,10 +24,10 @@
       "neural": {
         "reference_utci_c": 19.62071990966797,
         "contributions_c": {
-          "air_temperature_c": -13.932156562805174,
+          "air_temperature_c": -13.940613428751627,
           "mrt_minus_air_temperature_c": 0.0,
-          "wind_speed_m_s": 0.4917640686035156,
-          "relative_humidity_percent": 1.0237388610839844
+          "wind_speed_m_s": 0.4917896588643392,
+          "relative_humidity_percent": 1.0588162740071614
         }
       },
       "polynomial": null
@@ -138,5 +138,5 @@
       "date": "2026-10-27"
     }
   ],
-  "updated_at": "2026-11-10T13:45:52.288831+00:00"
+  "updated_at": "2026-11-10T13:48:51.063752+00:00"
 }
