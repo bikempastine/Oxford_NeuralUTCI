@@ -1,19 +1,19 @@
 {
   "current": {
-    "observed_at": "2026-11-10T21:26:09+00:00",
-    "calculated_at": "2026-11-10T21:31:03.261683+00:00",
-    "utci_c": 6.6,
-    "neural_utci_c": 6.6,
+    "observed_at": "2026-11-11T01:28:09+00:00",
+    "calculated_at": "2026-11-11T01:33:21.244741+00:00",
+    "utci_c": 6.1,
+    "neural_utci_c": 6.1,
     "neural_stress_category": "Slight cold stress",
-    "polynomial_utci_c": 7.4,
+    "polynomial_utci_c": 6.6,
     "polynomial_status": "calculated_with_wind_floor",
     "polynomial_wind_speed_m_s": 0.5,
     "polynomial_stress_category": "Slight cold stress",
     "inputs": {
-      "air_temperature_c": 5.6,
-      "mean_radiant_temperature_c": 5.6,
+      "air_temperature_c": 5.0,
+      "mean_radiant_temperature_c": 5.0,
       "wind_speed_m_s": 0.0,
-      "relative_humidity_percent": 95.1
+      "relative_humidity_percent": 98.2
     },
     "shap": {
       "reference_inputs": {
@@ -23,21 +23,21 @@
         "relative_humidity_percent": 50.0
       },
       "neural": {
-        "reference_utci_c": 19.62071990966797,
+        "reference_utci_c": 19.620718002319336,
         "contributions_c": {
-          "air_temperature_c": -15.45104694366455,
+          "air_temperature_c": -16.23445852597554,
           "mrt_minus_air_temperature_c": 0.0,
-          "wind_speed_m_s": 0.4921622276306152,
-          "relative_humidity_percent": 1.9814186096191406
+          "wind_speed_m_s": 0.49385825792948407,
+          "relative_humidity_percent": 2.173020521799723
         }
       },
       "polynomial": {
         "reference_utci_c": 19.76884447123831,
         "contributions_c": {
-          "air_temperature_c": -14.951834661927114,
+          "air_temperature_c": -15.802748457631528,
           "mrt_minus_air_temperature_c": 0.0,
-          "wind_speed_m_s": 0.8783765292591345,
-          "relative_humidity_percent": 1.6933274222811816
+          "wind_speed_m_s": 0.8955071161422344,
+          "relative_humidity_percent": 1.704502453081769
         }
       }
     }
@@ -147,5 +147,5 @@
       "date": "2026-10-27"
     }
   ],
-  "updated_at": "2026-11-10T21:31:03.261683+00:00"
+  "updated_at": "2026-11-11T01:33:21.244741+00:00"
 }
