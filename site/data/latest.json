@@ -1,19 +1,19 @@
 {
   "current": {
-    "observed_at": "2026-11-12T13:18:10+00:00",
-    "calculated_at": "2026-11-12T13:22:59.402826+00:00",
-    "utci_c": 4.6,
-    "neural_utci_c": 4.6,
-    "neural_stress_category": "Slight cold stress",
-    "polynomial_utci_c": 4.9,
-    "polynomial_status": "calculated",
-    "polynomial_wind_speed_m_s": 0.7,
+    "observed_at": "2026-11-12T21:07:06+00:00",
+    "calculated_at": "2026-11-12T21:12:26.609557+00:00",
+    "utci_c": -0.1,
+    "neural_utci_c": -0.1,
+    "neural_stress_category": "Moderate cold stress",
+    "polynomial_utci_c": 1.2,
+    "polynomial_status": "calculated_with_wind_floor",
+    "polynomial_wind_speed_m_s": 0.5,
     "polynomial_stress_category": "Slight cold stress",
     "inputs": {
-      "air_temperature_c": 4.9,
-      "mean_radiant_temperature_c": 4.9,
-      "wind_speed_m_s": 0.7,
-      "relative_humidity_percent": 46.6
+      "air_temperature_c": -0.4,
+      "mean_radiant_temperature_c": -0.4,
+      "wind_speed_m_s": 0.0,
+      "relative_humidity_percent": 80.2
     },
     "shap": {
       "reference_inputs": {
@@ -23,21 +23,21 @@
         "relative_humidity_percent": 50.0
       },
       "neural": {
-        "reference_utci_c": 19.62071990966797,
+        "reference_utci_c": 19.620718002319336,
         "contributions_c": {
-          "air_temperature_c": -15.185953458150225,
+          "air_temperature_c": -21.129868348439537,
           "mrt_minus_air_temperature_c": 0.0,
-          "wind_speed_m_s": 0.284202496210734,
-          "relative_humidity_percent": -0.14147337277730304
+          "wind_speed_m_s": 0.3730768362681071,
+          "relative_humidity_percent": 1.0390249888102214
         }
       },
       "polynomial": {
         "reference_utci_c": 19.76884447123831,
         "contributions_c": {
-          "air_temperature_c": -15.361958847228616,
+          "air_temperature_c": -20.601834497639537,
           "mrt_minus_air_temperature_c": 0.0,
-          "wind_speed_m_s": 0.5588428053057699,
-          "relative_humidity_percent": -0.11073485846191566
+          "wind_speed_m_s": 1.0030039588251243,
+          "relative_humidity_percent": 0.9923037729029338
         }
       }
     }
@@ -147,5 +147,5 @@
       "date": "2026-10-27"
     }
   ],
-  "updated_at": "2026-11-12T13:22:59.402826+00:00"
+  "updated_at": "2026-11-12T21:12:26.609557+00:00"
 }
