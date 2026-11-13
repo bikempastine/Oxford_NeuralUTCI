@@ -285,9 +285,12 @@ function renderCurrent(record) {
   const neuralValueElement = document.getElementById("neural-utci-value");
   const neuralResult = neuralValueElement.closest(".result");
   const neuralDescription = document.getElementById("neural-description");
+  const neuralCloud = document.getElementById("neural-cloud-indicator");
   neuralDescription.textContent =
     "A neural-network model that estimates UTCI from the station's weather readings.";
   neuralValueElement.textContent = `${Number(neuralValue).toFixed(1)} °C`;
+  neuralCloud.hidden = !Number.isFinite(Number(neuralValue)) ||
+    Number(neuralValue) <= 5;
   const neuralClass = categoryClass(neuralStress);
   neuralValueElement.className = `utci-value ${neuralClass}`;
   setResultCategory(neuralResult, neuralStress);
