@@ -1,19 +1,19 @@
 {
   "current": {
-    "observed_at": "2026-11-22T18:02:59+00:00",
-    "calculated_at": "2026-11-22T18:08:09.968617+00:00",
-    "utci_c": 3.0,
-    "neural_utci_c": 3.0,
+    "observed_at": "2026-11-22T23:44:09+00:00",
+    "calculated_at": "2026-11-22T23:56:26.753208+00:00",
+    "utci_c": 0.2,
+    "neural_utci_c": 0.2,
     "neural_stress_category": "Slight cold stress",
-    "polynomial_utci_c": 4.2,
+    "polynomial_utci_c": 1.5,
     "polynomial_status": "calculated_with_wind_floor",
     "polynomial_wind_speed_m_s": 0.5,
     "polynomial_stress_category": "Slight cold stress",
     "inputs": {
-      "air_temperature_c": 2.6,
-      "mean_radiant_temperature_c": 2.6,
+      "air_temperature_c": -0.3,
+      "mean_radiant_temperature_c": -0.3,
       "wind_speed_m_s": 0.0,
-      "relative_humidity_percent": 77.9
+      "relative_humidity_percent": 94.7
     },
     "shap": {
       "reference_inputs": {
@@ -25,19 +25,19 @@
       "neural": {
         "reference_utci_c": 19.62071990966797,
         "contributions_c": {
-          "air_temperature_c": -18.02202014128367,
+          "air_temperature_c": -21.57394613822301,
           "mrt_minus_air_temperature_c": 0.0,
-          "wind_speed_m_s": 0.4472125967343648,
-          "relative_humidity_percent": 0.9937709768613179
+          "wind_speed_m_s": 0.40385430554548896,
+          "relative_humidity_percent": 1.7931316147247949
         }
       },
       "polynomial": {
         "reference_utci_c": 19.76884447123831,
         "contributions_c": {
-          "air_temperature_c": -17.422105642853857,
+          "air_temperature_c": -21.00103585440118,
           "mrt_minus_air_temperature_c": 0.0,
-          "wind_speed_m_s": 0.9406766325604502,
-          "relative_humidity_percent": 0.9032058913244239
+          "wind_speed_m_s": 1.0043942948433853,
+          "relative_humidity_percent": 1.7460045675748008
         }
       }
     }
@@ -147,5 +147,5 @@
       "date": "2026-10-27"
     }
   ],
-  "updated_at": "2026-11-22T18:08:09.968617+00:00"
+  "updated_at": "2026-11-22T23:56:26.753208+00:00"
 }
